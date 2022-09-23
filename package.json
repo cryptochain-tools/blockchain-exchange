@@ -1,0 +1,103 @@
+{
+  "name": "blockchain-watch",
+  "displayName": "blockchain-watch",
+  "description": "vscode 配置状态栏查看 比特币，以太坊等400多种交易对价格，对接火币网API",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.71.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:USDT"
+  ],
+  "keywords": [
+    "btc",
+    "eth",
+    "blockchain",
+    "vscode"
+  ],
+  "icon": "img/icon.png",
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "properties": {
+        "blockchain-watch.coin": {
+          "type": "array",
+          "default": [
+            "btcusdt"
+          ],
+          "description": "配置需要监控的数字货币"
+        },
+        "blockchain-watch.updateInterval": {
+          "type": "number",
+          "default": 10000,
+          "description": "配置轮询请求最新数据的时间间隔，单位：毫秒"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "blockChain",
+          "title": "区块链价格监控",
+          "icon": "img/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "blockChain": [
+        {
+          "id": "USDT",
+          "name": "USDT"
+        },
+        {
+          "id": "TOOL",
+          "name": "工具"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "coin.focus",
+        "title": "跳转到浏览器火币网地址"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.71.0",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@vscode/test-electron": "^2.1.5",
+    "eslint": "^8.20.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "typescript": "^4.7.4",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^2.0.1",
+    "vite": "^3.0.9",
+    "less": "^4.1.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0",
+    "react-vant": "^3.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "open": "^8.4.0"
+  }
+}
