@@ -65,5 +65,20 @@ export const util = {
         return $1 + vscode.Uri.file(path.resolve(dirPath, $2)).with({ scheme: 'vscode-resource' }).toString() + '"'
     })
     return html
+},
+
+localize(key: string) {
+    // let lan = JSON.parse(process.env.VSCODE_NLS_CONFIG || `{locale: 'zh-cn'}`);
+    // if (lan.locale.toLowerCase() === 'zh-cn') {
+    //     return language[key].chinese;
+    // } else {
+    //     return language[key].english;
+    // }
+    return '插件模版'
+},
+
+getLanguage():string {
+    let lan = JSON.parse(process.env.VSCODE_NLS_CONFIG || `{locale: 'zh-CN'}`)
+    return lan.locale
 }
 }
