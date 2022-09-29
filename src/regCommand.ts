@@ -1,5 +1,5 @@
 import * as vscode from "vscode"
-import { TemplatePanel } from "./templatePanel"
+import { WebViewPanel } from "./webViewPanel"
 import { Trade } from "./trade/trade"
 import open from "./utils/open"
 
@@ -12,7 +12,7 @@ export function regCommand(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("tool.webview", (link, label) => {
       Trade.show(label, context)
-      TemplatePanel.show(context)
+      WebViewPanel.show(context)
      
     })
   )

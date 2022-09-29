@@ -19,6 +19,8 @@ export class Trade {
     this.context = context
     this.onVebView()
   }
+
+  /** 监听 Webview 事件 */
   private onVebView() {
     eventBus.on(WebViewMessage.readVscodeConfig, (type) => {
       if(type === WebViewMessage.readActiveType) {
@@ -43,7 +45,6 @@ export class Trade {
       }
   
     })
-    // , WebViewMessage.readActiveType
     eventBus.on(WebViewMessage.setAllConfig, (data: any) => {
       if(data.activeExchange){
         vscode.window.showInformationMessage('成功！')
@@ -54,17 +55,23 @@ export class Trade {
     })
   }
 
+  /** 设置激活的交易所 */
   private setActiveExchange(
     value: string
   ) {
     return this.context.globalState.update(ACTIVE_EXCHANGE, value)
   }
+
+  /** 设置 label */
   setLabel(label: string) {
     this.label = label
   }
+
+  /** 读取激活的交易所 */
   private static readActiveExchange(context: vscode.ExtensionContext) {
     return context.globalState.get(ACTIVE_EXCHANGE) || Exchange.Binance
   }
+  /** 显示 Webview */
   static show(label: string, context: vscode.ExtensionContext) {
     if (Trade.currentTrade) {
       Trade.currentTrade.setLabel(label)
@@ -72,7 +79,7 @@ export class Trade {
         command: WebViewMessage.readActiveType,
         data: label,
       })
-      Trade.currentTrade.onVebView()
+      Trade.start(context, false)
       return Trade.currentTrade
     }
     Bybit.show(context)
@@ -83,10 +90,15 @@ export class Trade {
     return Trade.currentTrade
     
   }
-
-  static start(context: vscode.ExtensionContext) {
-    Binance.clear()
-    Bybit.clear()
+  /**
+   * 开始监听
+   * @param context vscode.ExtensionContext 
+   * @param isClear 是否清理
+   */
+  static start(context: vscode.ExtensionContext, isClear = true) {
+    if(isClear) {
+      Trade.clear()
+    }
     const exchange = Trade.readActiveExchange(context)
     switch (exchange) {
       case Exchange.Bybit:
@@ -100,5 +112,11 @@ export class Trade {
         Bybit.start()
         break
     }
+  }
+
+  /** 清理推送节约资源 */
+  static clear() {
+    Binance.clear()
+    Bybit.clear()
   }
 }

@@ -50,17 +50,19 @@ export class Binance {
   }
 
   static start() {
-    vscode.window.showInformationMessage('激活 Binance 成功！')
-    Binance.current.initClient()
-    Binance.current.getDataAll()
-    Binance.current.time = setInterval(() => {
+    if(!Binance.current.time){
+      Binance.current.initClient()
       Binance.current.getDataAll()
-    }, 3000)
+      Binance.current.time = setInterval(() => {
+        Binance.current.getDataAll()
+      }, 2000)
+    }
+
   }
 
   static clear() {
     if(Binance.current.time){
-      vscode.window.showInformationMessage('清理 Binance 成功！')
+      // vscode.window.showInformationMessage('清理 Binance 成功！')
       clearInterval(Binance.current.time)
       Binance.current.time = null
       // Bybit.current = null

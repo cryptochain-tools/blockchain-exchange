@@ -6,8 +6,8 @@ import eventBus, { EventBusConstants } from "./utils/eventBus"
 import { Binance } from "./trade/binance"
 import { Bybit } from "./trade/bybit"
 
-export class TemplatePanel {
-  private static currentPanel: TemplatePanel | undefined
+export class WebViewPanel {
+  private static currentPanel: WebViewPanel | undefined
   private readonly _panel: vscode.WebviewPanel
   private readonly _context: vscode.ExtensionContext
   private readonly _extensionPath: string
@@ -34,6 +34,8 @@ export class TemplatePanel {
       null,
       this._disposables
     )
+
+
     eventBus.on(EventBusConstants.SEND_VEBVIEW_MESSAGE, (data: {
       command: string,
       data: any
@@ -48,11 +50,11 @@ export class TemplatePanel {
 
   public static show(context: vscode.ExtensionContext) {
    
-    if (TemplatePanel.currentPanel) {
+    if (WebViewPanel.currentPanel) {
       const column = vscode.window.activeTextEditor
         ? vscode.window.activeTextEditor.viewColumn
         : undefined
-      TemplatePanel.currentPanel._panel.reveal(column)
+      WebViewPanel.currentPanel._panel.reveal(column)
       return
     }
 
@@ -61,7 +63,9 @@ export class TemplatePanel {
       util.localize("template"),
       vscode.ViewColumn.Active,
       {
+        // 启用JS，默认禁用
         enableScripts: true,
+        // webview被隐藏时保持状态，避免被重置
         retainContextWhenHidden: true,
         localResourceRoots: [
           vscode.Uri.file(
@@ -72,11 +76,11 @@ export class TemplatePanel {
       }
     )
 
-    TemplatePanel.currentPanel = new TemplatePanel(panel, context)
+    WebViewPanel.currentPanel = new WebViewPanel(panel, context)
   }
 
   public dispose() {
-    TemplatePanel.currentPanel = undefined
+    WebViewPanel.currentPanel = undefined
     Binance.clear()
     Bybit.clear()
     eventBus.off(EventBusConstants.SEND_VEBVIEW_MESSAGE)

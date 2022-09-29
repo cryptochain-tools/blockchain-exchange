@@ -65,17 +65,20 @@ export class Bybit {
 
   }
   static start() {
-    vscode.window.showInformationMessage('激活 Bybit 成功！')
-    Bybit.current.initClient()
-    Bybit.current.getDataAll()
-    Bybit.current.time = setInterval(() => {
+    if(!Bybit.current.time){
+      Bybit.current.initClient()
       Bybit.current.getDataAll()
-    }, 3000)
+      Bybit.current.time = setInterval(() => {
+        console.log('===DEBUG===')
+        Bybit.current.getDataAll()
+      }, 2000)
+    }
+
   }
 
   static clear() {
     if(Bybit.current.time){
-      vscode.window.showInformationMessage('清理 Bybit 成功！')
+      // vscode.window.showInformationMessage('清理 Bybit 成功！')
       clearInterval(Bybit.current.time)
       Bybit.current.time = null
       // Bybit.current = null
