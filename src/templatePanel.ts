@@ -65,9 +65,9 @@ export class TemplatePanel {
         retainContextWhenHidden: true,
         localResourceRoots: [
           vscode.Uri.file(
-            path.join(context.extensionPath, "src/web/dist/assets")
+            path.join(context.extensionPath, "out/webDist/assets")
           ),
-          vscode.Uri.file(path.join(context.extensionPath, "src/web", "dist")),
+          // vscode.Uri.file(path.join(context.extensionPath, "src/web", "dist")),
         ],
       }
     )
@@ -92,17 +92,19 @@ export class TemplatePanel {
 
 async function getWebviewContent(extensionPath: string) {
   const distPath = vscode.Uri.file(
-    path.join(extensionPath, "src/web/dist")
+    path.join(extensionPath, "out/webDist")
   ).with({ scheme: "vscode-resource" })
   let html = await fse.readFile(
-    path.join(__dirname, "../src/web/dist/index.html")
+    path.join(__dirname, "webDist/index.html")
   )
+  
   const hrefReg = /href=(["']{1})\/{1}([^\/])/gi
   const srcReg = /src=(["']{1})\/{1}([^\/])/gi
-  let str = html
+  const str = html
     .toString()
     .replace(hrefReg, `href=$1${distPath}/$2`)
     .replace(srcReg, `src=$1${distPath}/$2`)
+
   return str
 }
 

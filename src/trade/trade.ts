@@ -72,13 +72,15 @@ export class Trade {
         command: WebViewMessage.readActiveType,
         data: label,
       })
-      return
+      Trade.currentTrade.onVebView()
+      return Trade.currentTrade
     }
     Bybit.show(context)
     Binance.show(context)
     Trade.start(context)
 
     Trade.currentTrade = new Trade(label, context)
+    return Trade.currentTrade
     
   }
 
