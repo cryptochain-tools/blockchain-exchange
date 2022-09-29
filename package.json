@@ -92,7 +92,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "dev": "cd src/web/ && yarn dev",
+    "dev": "cd web && yarn dev",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",

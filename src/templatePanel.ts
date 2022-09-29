@@ -24,21 +24,6 @@ export class TemplatePanel {
   }
 
   private async initialize() {
-    // switch (message.command) {
-    //   case "getSetting":
-    //     this._panel.webview.postMessage({
-    //       command: "setSetting",
-    //       data: {
-    //         language: util.getLanguage(),
-    //         resource: this._panel.webview.asWebviewUri(
-    //           vscode.Uri.file(path.join(this._extensionPath, "src/web/dist",))
-    //         ),
-    //       },
-    //     })
-    //     break
-    //   default:
-    //     break
-    // }
     this._panel.onDidDispose(() => {
       this.dispose()
     }, null, this._disposables)
