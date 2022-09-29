@@ -1,10 +1,11 @@
 import * as vscode from 'vscode'
 import axios from 'axios'
 import { util } from './utils'
-// const {GET_EXCHANGE_INFO} = require('./config/index')
-import { GET_EXCHANGE_INFO } from './config'
+import { GET_EXCHANGE_INFO, HUOBI_LINK, API_ADDRESS } from './config'
 import { TreeProvider } from './treeProvider'
 import { error } from 'console'
+import eventBus, { EventBusConstants } from './utils/eventBus'
+import { WebViewMessage } from './config/constants'
 
 export class App {
     private activateContext: vscode.ExtensionContext
@@ -52,6 +53,7 @@ export class App {
             if (result.status === 'ok' && result.data.length) {
                 this.updateStatusBar(result.data)
                 this.updateActivityBar(result.data)
+                this.formatCoinData(result.data)
             }
         }).
         catch((error) => {
@@ -76,12 +78,16 @@ export class App {
             const coinInfo = util.getHuobiCoinInfo(symbol.toUpperCase())
             const trading = coinInfo[1]
             const link = `${this.HUOBI_LINK}${coinInfo.join('_').toLowerCase()}`
-            const isFocus = this.coins.indexOf(symbol) === -1 ? 0 : 1
+            const isFocus = this.coins.indexOf(symbol.toUpperCase()) === -1 ? 0 : 1
 
             if(trading === 'ETH' || trading === 'USDT' || trading === 'BTC'){
                 const newItem = {
                     label: `「${coinInfo[0]}」${item.close} ${item.close > item.open ? '📈' : '📉'} ${((item.close - item.open) / item.open * 100).toFixed(2)}%`,
                     icon: `star${isFocus}.png`,
+                    isFocus,
+                    price: item.close,
+                    type: `${item.close > item.open ? '📈' : '📉'} ${((item.close - item.open) / item.open * 100).toFixed(2)}%`,
+                    coin: coinInfo[0],
                     symbol: symbol,
                     link: link,
                     extension: "coin.focus"
@@ -93,25 +99,65 @@ export class App {
                 
             }
         })
-        coinArr['TOOL'].unshift({
-            label: `配置`,
-            icon: `cointool.png`,
-            symbol: 'cointool',
-            link: '',
-            extension: "tool.webview"
+        eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
+            command: WebViewMessage.market,
+            data: coinArr['USDT']
         })
+        // coinArr['TOOL'].unshift({
+        //     label: `配置`,
+        //     icon: `cointool.png`,
+        //     symbol: 'cointool',
+        //     link: '',
+        //     extension: "tool.webview"
+        // })
         return coinArr
     }
     /*
      * 更新 ActivityBar
      */
-    updateActivityBar(data: any) {
+    updateActivityBar(data?: any) {
         const coinData = this.formatCoinData(data)
-        // console.log(coinData['USDT'])
         let provider: any = new TreeProvider(vscode.workspace.rootPath, coinData['USDT'], this.activateContext)
-        vscode.window.registerTreeDataProvider("USDT", provider)
-        let providerTool: any = new TreeProvider(vscode.workspace.rootPath, coinData['TOOL'], this.activateContext)
-        vscode.window.registerTreeDataProvider("TOOL", providerTool)
+        vscode.window.registerTreeDataProvider("MARKET", provider)
+        const coinArr =  [
+            {
+                label: `Market`,
+                icon: `cointool.png`,
+                symbol: 'cointool',
+                link: '',
+                extension: "tool.webview"
+            },
+            {
+                label: `Open Orders`,
+                icon: `cointool.png`,
+                symbol: 'cointool',
+                link: '',
+                extension: "tool.webview"
+            },
+            {
+                label: `Position`,
+                icon: `cointool.png`,
+                symbol: 'cointool',
+                link: '',
+                extension: "tool.webview"
+            },
+            {
+                label: `Account`,
+                icon: `cointool.png`,
+                symbol: 'cointool',
+                link: '',
+                extension: "tool.webview"
+            },
+            {
+                label: `Settings`,
+                icon: `cointool.png`,
+                symbol: 'cointool',
+                link: '',
+                extension: "tool.webview"
+            }
+        ]
+        let providerTool: any = new TreeProvider(vscode.workspace.rootPath, coinArr, this.activateContext)
+        vscode.window.registerTreeDataProvider("EXCHANGE", providerTool)
     }
     /*
      * 更新底部 StatusBar
@@ -120,7 +166,7 @@ export class App {
         data.forEach((item: any) => {
             const { symbol } = item
             const coinInfo = util.getHuobiCoinInfo(symbol.toUpperCase())
-            if (this.coins.indexOf(symbol) !== -1) {
+            if (this.coins.indexOf(symbol.toUpperCase()) !== -1) {
                 const statusBarItemsText = `「${coinInfo[0]}」${item.close} ${coinInfo[1]} ${item.close > item.open ? '📈' : '📉'} ${((item.close - item.open) / item.open * 100).toFixed(2)}%`
                 if (this.statusBarItems[symbol]) {
                     this.statusBarItems[symbol].text = statusBarItemsText
@@ -154,14 +200,17 @@ export class App {
         }, this.updateInterval)
     }
     init() {
+        this.API_ADDRESS = API_ADDRESS
+        this.HUOBI_LINK = HUOBI_LINK
+        this.watcher()
         // @ts-ignore
-        axios.get(GET_EXCHANGE_INFO)
-        .then((res) => {
-            this.API_ADDRESS = res.data.API_ADDRESS
-            this.HUOBI_LINK = res.data.HUOBI_LINK
-            this.watcher()
-        }, (error) =>{
-            console.log(error)
-        })
+        // axios.get(GET_EXCHANGE_INFO)
+        // .then((res) => {
+        //     this.API_ADDRESS = res.data.API_ADDRESS
+        //     this.HUOBI_LINK = res.data.HUOBI_LINK
+        //     this.watcher()
+        // }, (error) =>{
+        //     console.log(error)
+        // })
     }
 }

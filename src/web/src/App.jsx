@@ -1,26 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState, useEffect } from "react"
+import "./App.less"
+import { ConfigProvider } from "antd"
+import zhCN from "antd/es/locale/zh_CN"
+import Trade from "./pages/Trade"
+import eventBus from "./utils/eventBus"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [type, setType] = useState("trade")
+  useEffect(() => {
+    window.addEventListener('message', event => {
+      const message = event.data
+      eventBus.emit(message.command, message.data)
+  })
+  })
+  const pages = () => {
+    switch (type) {
+      case "trade":
+        return <Trade />
 
-  return (
-    <div className="App">
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      default:
+        return null
+    }
+  }
+
+  return <ConfigProvider locale={zhCN} componentSize="small" theme="dark">
+    <div className="app">
+    {pages()}
     </div>
-  )
+  </ConfigProvider>
 }
 
 export default App

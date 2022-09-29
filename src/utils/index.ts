@@ -20,19 +20,34 @@ export const util = {
       }
     }
   },
+    /**
+   * 获取配置文件的 Bybit 币对
+   */
+     getConfigurationBybitCoin() {
+      const config = vscode.workspace.getConfiguration()
+      return config.get('blockchain-exchange.bybitCoin')
+    },
+
+        /**
+   * 获取配置文件的 Binance 币对
+   */
+         getConfigurationBinanceCoin() {
+          const config = vscode.workspace.getConfiguration()
+          return config.get('blockchain-exchange.binanceCoin')
+        },
   /**
    * 获取配置文件的监听币种
    */
   getConfigurationCoin() {
     const config = vscode.workspace.getConfiguration()
-    return config.get('blockchain-watch.coin')
+    return config.get('blockchain-exchange.coin')
   },
   /**
    * 获取配置文件的更新时间
    */
   getConfigurationTime() {
     const config = vscode.workspace.getConfiguration()
-    return config.get('blockchain-watch.updateInterval')
+    return config.get('blockchain-exchange.updateInterval')
   },
   /**
    * 获取分割 symbol信息 
@@ -74,7 +89,7 @@ localize(key: string) {
     // } else {
     //     return language[key].english;
     // }
-    return '插件模版'
+    return 'Exchange'
 },
 
 getLanguage():string {

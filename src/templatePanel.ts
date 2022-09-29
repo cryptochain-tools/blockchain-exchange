@@ -1,7 +1,10 @@
 import * as vscode from "vscode"
-import { util  } from "./utils"
+import { util } from "./utils"
 import * as path from "path"
 import * as fse from "fs-extra"
+import eventBus, { EventBusConstants } from "./utils/eventBus"
+import { Binance } from "./trade/binance"
+import { Bybit } from "./trade/bybit"
 
 export class TemplatePanel {
   private static currentPanel: TemplatePanel | undefined
@@ -21,32 +24,45 @@ export class TemplatePanel {
   }
 
   private async initialize() {
-    this._panel.onDidDispose(() => this.dispose(), null, this._disposables)
+    // switch (message.command) {
+    //   case "getSetting":
+    //     this._panel.webview.postMessage({
+    //       command: "setSetting",
+    //       data: {
+    //         language: util.getLanguage(),
+    //         resource: this._panel.webview.asWebviewUri(
+    //           vscode.Uri.file(path.join(this._extensionPath, "src/web/dist",))
+    //         ),
+    //       },
+    //     })
+    //     break
+    //   default:
+    //     break
+    // }
+    this._panel.onDidDispose(() => {
+      this.dispose()
+    }, null, this._disposables)
     this._panel.webview.onDidReceiveMessage(
       async (message) => {
-        switch (message.command) {
-          case "getSetting":
-            this._panel.webview.postMessage({
-              command: "setSetting",
-              data: {
-                language: util.getLanguage(),
-                resource: this._panel.webview.asWebviewUri(
-                  vscode.Uri.file(path.join(this._extensionPath, "src/web/dist",))
-                ),
-              },
-            })
-            break
-          default:
-            break
-        }
+        eventBus.emit(message.command, message.data)
       },
       null,
       this._disposables
     )
+    eventBus.on(EventBusConstants.SEND_VEBVIEW_MESSAGE, (data: {
+      command: string,
+      data: any
+    }) => {
+      this._panel.webview.postMessage({
+        command: data.command,
+        data: data.data,
+      })
+    })
     this._panel.webview.html = await getWebviewContent(this._extensionPath)
   }
 
   public static show(context: vscode.ExtensionContext) {
+   
     if (TemplatePanel.currentPanel) {
       const column = vscode.window.activeTextEditor
         ? vscode.window.activeTextEditor.viewColumn
@@ -54,7 +70,6 @@ export class TemplatePanel {
       TemplatePanel.currentPanel._panel.reveal(column)
       return
     }
-
 
     const panel = vscode.window.createWebviewPanel(
       "Template",
@@ -64,7 +79,9 @@ export class TemplatePanel {
         enableScripts: true,
         retainContextWhenHidden: true,
         localResourceRoots: [
-          vscode.Uri.file(path.join(context.extensionPath, "src/web/dist/assets")),
+          vscode.Uri.file(
+            path.join(context.extensionPath, "src/web/dist/assets")
+          ),
           vscode.Uri.file(path.join(context.extensionPath, "src/web", "dist")),
         ],
       }
@@ -75,8 +92,10 @@ export class TemplatePanel {
 
   public dispose() {
     TemplatePanel.currentPanel = undefined
-    this._panel.dispose()
-
+    Binance.clear()
+    Bybit.clear()
+    eventBus.off(EventBusConstants.SEND_VEBVIEW_MESSAGE)
+    // this._panel.dispose()
     while (this._disposables.length) {
       const x = this._disposables.pop()
       if (x) {
@@ -93,7 +112,6 @@ async function getWebviewContent(extensionPath: string) {
   let html = await fse.readFile(
     path.join(__dirname, "../src/web/dist/index.html")
   )
-  console.log(distPath, 'distPath')
   const hrefReg = /href=(["']{1})\/{1}([^\/])/gi
   const srcReg = /src=(["']{1})\/{1}([^\/])/gi
   let str = html

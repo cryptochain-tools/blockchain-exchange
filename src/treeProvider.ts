@@ -62,7 +62,7 @@ export class TreeProvider {
       {
         title: label,
         command: extension,
-        arguments: [link],
+        arguments: [link, label],
       },
       {
         dark: darkIcon,

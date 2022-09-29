@@ -21,6 +21,9 @@
 
 *更改 `src/extension.ts` 中的代码后，您可以从调试工具栏中重新启动扩展。
 *您还可以使用您的扩展重新加载（`Ctrl+R` 或`Cmd+R` 在 Mac 上）VS Code 窗口以加载您的更改。
+## 激活事件
+`https://blog.csdn.net/guoqiankunmiss/article/details/118380533`
+`https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publishing-extensions`
 
 ## 探索 API
 
