@@ -1,5 +1,14 @@
 # 比特币交易
 
+## 交易:
+
+> 📢 请勿允许提现权限、请勿允许提现权限、请勿允许提现权限
+> 📢 代码不会存储你交易所 APIKey，放在本地缓存内部
+
+[Bybit API](https://www.bybit.com/app/user/api-management)
+
+[Binance API](https://www.binance.com/zh-CN/my/settings/api-management)
+
 ## Configuration:
 
 修改用户配置，添加你所需要监控的数字货币
@@ -38,10 +47,3 @@
    */
   "blockchain-exchange.updateInterval": 10000
 ```
-
-## 交易:
-
-> 📢 请勿允许提现、请勿允许提现、请勿允许提现
-> 📢 代码不会存储你交易所 APIKey，放在本地缓存内部
-
-修改用户配置，添加你所在交易所的 API
