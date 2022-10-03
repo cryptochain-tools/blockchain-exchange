@@ -191,14 +191,16 @@ export class Binance {
   async getSpotActiveOrders() {
     // testNewOrder
     const data = await this.client.getOpenOrders()
-    const result = data.map((item) => {
+    let result = data.map((item) => {
       return {
         ...item,
         orderQty: Number(item.origQty).toFixed(2),
         orderPrice: Number(item.price).toFixed(2),
+        sideCN: item.side === "BUY" ? "买入" : "卖出",
         orderType: item.type,
       }
     })
+    result = result.sort((a, b) => Number(b.orderPrice) - Number(a.orderPrice))
     this.emitVebView(WebViewMessage.openOrder, DataType.binanceSpot, result)
   }
 

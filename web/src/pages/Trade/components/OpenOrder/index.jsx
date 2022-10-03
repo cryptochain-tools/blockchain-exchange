@@ -56,8 +56,8 @@ const OpenOrder = () => {
     },
     {
       title: "类型",
-      dataIndex: "side",
-      key: "side",
+      dataIndex: "sideCN",
+      key: "sideCN",
     },
     {
       title: "订单类型",

@@ -19,9 +19,7 @@ const onChange = (key) => {
 }
   const [isTransfer, setIsTransfer] = useState(false)
   const [page, setPage] = useState({
-    bybitUnifiedMargin: {
-      coin: [],
-    },
+    bybitUnifiedMargin: [],
     bybitSpot: [],
     binanceSpot:[]
   })
@@ -144,7 +142,7 @@ const onChange = (key) => {
               children: (
                 <Table
                   size="small"
-                  dataSource={page.bybitUnifiedMargin.coin}
+                  dataSource={page.bybitUnifiedMargin}
                   columns={columns}
                   pagination={false}
                   showHeader={true}
@@ -182,7 +180,7 @@ const onChange = (key) => {
       </div>
       <Transfer
         isTransfer={isTransfer}
-        coin={page.bybitUnifiedMargin.coin}
+        coin={page.bybitUnifiedMargin}
         setIsTransfer={setIsTransfer}
       />
     </div>

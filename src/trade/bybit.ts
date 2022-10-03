@@ -9,6 +9,7 @@ import {
   AccountAssetClient,
   CopyTradingClient,
   RestClientOptions,
+  WebsocketClient
 } from "bybit-api"
 import { WebViewMessage } from "../config/constants"
 import eventBus, { EventBusConstants } from "../utils/eventBus"
@@ -26,6 +27,7 @@ export class Bybit {
   private client: UnifiedMarginClient
   private spotClient: SpotClientV3
   private accountClient: AccountAssetClient
+  private unifiedWS: WebsocketClient
   private time: NodeJS.Timer | null
   private context: vscode.ExtensionContext
   constructor(context: vscode.ExtensionContext) {
@@ -44,6 +46,10 @@ export class Bybit {
       this.client = new UnifiedMarginClient(clientConfig)
       this.spotClient = new SpotClientV3(clientConfig)
       this.accountClient = new AccountAssetClient(clientConfig)
+      // this.unifiedWS = new WebsocketClient({
+      //   ...clientConfig,
+      //   market: 'unifiedPerp'
+      // })
     }else {
       vscode.window.showErrorMessage('未配置 Bybit API Key，请去设置界面配置！')
     }
@@ -171,22 +177,41 @@ export class Bybit {
 
   private async getBalances() {
     const data = await this.client.getBalances()
+
     if (data.retCode === 0) {
+      console.log(data.result, 'data.result')
+      const result = data.result.coin.map((item) => {
+        return {
+          ...item,
+          equity: Number(item.equity).toFixed(2),
+          usdValue: Number(item.usdValue).toFixed(2),
+          availableBalanceWithoutConvert: Number(item.availableBalanceWithoutConvert).toFixed(2),
+        }
+      })
       this.emitVebView(
         WebViewMessage.account,
         DataType.bybitUnifiedMargin,
-        data.result
+        result
       )
     }
   }
 
   private async getSpotBalances() {
     const data = await this.spotClient.getBalances()
+
     if (data.retCode === 0) {
+      const result = data.result.balances.map((item) => {
+        return {
+          ...item,
+          locked: Number(item.locked).toFixed(2),
+          free: Number(item.free).toFixed(2),
+          total: Number(item.total).toFixed(2),
+        }
+      })
       this.emitVebView(
         WebViewMessage.account,
         DataType.bybitSpot,
-        data.result.balances
+        result
       )
     }
   }
@@ -204,11 +229,18 @@ export class Bybit {
 
   async getSpotActiveOrders() {
     const data = await this.spotClient.getOpenOrders()
+    let list = data.result.list.sort((a, b) => b.orderPrice - a.orderPrice)
+    list = list.map((x) => {
+      return {
+        ...x,
+        sideCN: x.side === "BUY" ? "买入" : "卖出",
+      }
+    })
     if (data.retCode === 0) {
       this.emitVebView(
         WebViewMessage.openOrder,
         DataType.bybitSpot,
-        data.result.list
+        list
       )
     }
   }
@@ -225,6 +257,7 @@ export class Bybit {
           sideCN: x.side === "Buy" ? "买入/做多" : "卖出/做空",
         }
       })
+      list = list.sort((a, b) => Number(b.price) - Number(a.price))
 
       this.emitVebView(
         WebViewMessage.openOrder,
