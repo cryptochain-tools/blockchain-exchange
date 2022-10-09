@@ -1,6 +1,6 @@
 import { Modal, Form, Button, Input, Radio } from "antd"
 import React, { useEffect } from "react"
-import { eventBus, WebViewMessage } from "../../../../utils/"
+import { eventBus, WebViewMessage } from "../../../../utils"
 const All = () => {
   const [form] = Form.useForm()
   // useEffect(() => {

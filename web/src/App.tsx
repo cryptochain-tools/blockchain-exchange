@@ -22,7 +22,7 @@ function App() {
     }
   }
 
-  return <ConfigProvider locale={zhCN} componentSize="small" theme="dark">
+  return <ConfigProvider locale={zhCN} componentSize="small">
     <div className="app">
     {pages()}
     </div>

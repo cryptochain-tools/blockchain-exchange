@@ -1,9 +1,9 @@
 import { Modal, Form, InputNumber, Select, Radio } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils/"
+import { eventBus, WebViewMessage } from "../../../../utils"
 import useCoin from "../../useCoin"
 
-import React from "react"
-const BinanceSpot = ({ open, setOpen }) => {
+import React, { FC } from "react"
+const BinanceSpot: FC<any> = ({ open, setOpen }) => {
   const coin = useCoin(WebViewMessage.readBinanceCoin)
   const [form] = Form.useForm()
   const handleOk = async () => {
@@ -41,7 +41,7 @@ const BinanceSpot = ({ open, setOpen }) => {
             rules={[{ required: true, message: "币种必填！" }]}
           >
             <Select>
-              {coin.map((item) => (
+              {coin.map((item: any) => (
                 <Select.Option value={item}>{item}</Select.Option>
               ))}
             </Select>

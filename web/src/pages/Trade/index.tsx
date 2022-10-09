@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { Tabs } from "antd"
-import { WebViewMessage, eventBus } from '../../utils/'
+import { WebViewMessage, eventBus } from '../../utils'
 import Market from './components/Market'
 import OpenOrder from './components/OpenOrder'
 import Position from './components/Position'
 import Account from './components/Account'
 import Settings from './components/Settings'
+import Tools from './components/Tools'
 
 const ItemsName = {
+  tools: 'Tools',
   market: 'Market',
   openOrder: 'Open Orders',
   position: 'Position',
@@ -16,10 +18,10 @@ const ItemsName = {
 }
 
 const Trade = () => {
-  const [activeKey, setActiveKey] = useState('')
-  const onChange = (key) => setActiveKey(key)
+  const [activeKey, setActiveKey] = useState<string>('')
+  const onChange = (key: string) => setActiveKey(key)
   useEffect(() => {
-    eventBus.on(WebViewMessage.readActiveType, (label) => {
+    eventBus.on(WebViewMessage.readActiveType, (label: any) => {
       setActiveKey(label)
     })
     
@@ -34,6 +36,11 @@ const Trade = () => {
         destroyInactiveTabPane={true}
         onChange={onChange}
         items={[
+          {
+            label: ItemsName.tools,
+            key: ItemsName.tools,
+            children: <Tools />,
+          },
           {
             label: ItemsName.market,
             key: ItemsName.market,

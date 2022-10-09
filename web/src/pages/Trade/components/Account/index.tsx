@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Table, Button, Divider, message, Popconfirm, Tabs, Modal } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils/"
+import { eventBus, WebViewMessage } from "../../../../utils"
 import Transfer from "../Transfer"
 const ItemsName = {
   key: 'ACTIVE_KEY_ACCOUNT',
@@ -13,7 +13,7 @@ const Account = () => {
   const [activeKey, setActiveKey] = useState(() => {
     return localStorage.getItem(ItemsName.key) || ItemsName.bybitUnifiedMargin
 })
-const onChange = (key) => {
+const onChange = (key: string) => {
     localStorage.setItem(ItemsName.key, key)
     setActiveKey(key)
 }
@@ -24,7 +24,7 @@ const onChange = (key) => {
     binanceSpot:[]
   })
   useEffect(() => {
-    eventBus.on(WebViewMessage.account, ({ type, data }) => {
+    eventBus.on(WebViewMessage.account, ({ type, data }: any) => {
       setPage({
         ...page,
         [type]: data,
@@ -79,7 +79,7 @@ const onChange = (key) => {
     {
       title: "设置",
       dataIndex: "settings",
-      render: (text, r) => {
+      render: (_: string, r: any) => {
         return (
           <div>
             <Button type="link" onClick={() => setIsTransfer(true)}>
@@ -95,7 +95,7 @@ const onChange = (key) => {
     {
       title: "设置",
       dataIndex: "settings",
-      render: (text, r) => {
+      render: (_: string, r: any) => {
         return (
           <div>
             <Button type="link" onClick={() => setIsTransfer(true)}>
@@ -112,7 +112,7 @@ const onChange = (key) => {
     {
       title: "设置",
       dataIndex: "settings",
-      render: (text, r) => {
+      render: (_: string, r: any) => {
         return (
           <div>
             <Button type="link" disabled>

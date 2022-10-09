@@ -1,23 +1,24 @@
 import { Modal, Form, InputNumber, Select, Radio } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils/"
+import { eventBus, WebViewMessage } from "../../../../utils"
 import useCoin from '../../useCoin'
 
-import React from "react"
-const UnifiedMargin = ({ open, setOpen }) => {
+import React, { FC } from "react"
+const Spot: FC<any>= ({ open, setOpen }) => {
   const coin = useCoin(WebViewMessage.readBybitCoin)
   const [form] = Form.useForm()
   const handleOk = async () => {
     const data = await form.validateFields()
 
-    eventBus.emitVscode(WebViewMessage.bybitDvPlaceorder, {
+    eventBus.emitVscode(WebViewMessage.bybitSpotPlaceorder, {
       ...data,
       category: "linear",
-      qty: String(data.qty),
-      price: String(data.price),
-      timeInForce: "GoodTillCancel",
+      orderQty: String(data.orderQty),
+      orderPrice: String(data.orderPrice),
+      timeInForce: "GTC",
     })
     setOpen(false)
   }
+
 
   const handleCancel = () => {
     setOpen(false)
@@ -25,7 +26,7 @@ const UnifiedMargin = ({ open, setOpen }) => {
   return (
     <div>
       <Modal
-        title="Bybit-统保挂单"
+        title="Bybit-现货挂单"
         open={open}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -44,20 +45,10 @@ const UnifiedMargin = ({ open, setOpen }) => {
             rules={[{ required: true, message: "币种必填！" }]}
           >
             <Select>
-              {coin.map((item) => (
+              {coin.map((item: any) => (
                 <Select.Option value={item}>{item}</Select.Option>
               ))}
             </Select>
-          </Form.Item>
-          <Form.Item
-            label="挂单数量"
-            name="qty"
-            rules={[{ required: true, message: "挂单数量必填！" }]}
-          >
-            <InputNumber />
-          </Form.Item>
-          <Form.Item label="价格" name="price">
-            <InputNumber />
           </Form.Item>
           <Form.Item
             label="仓位方向"
@@ -65,8 +56,8 @@ const UnifiedMargin = ({ open, setOpen }) => {
             rules={[{ required: true, message: "类型必填！" }]}
           >
             <Radio.Group>
-              <Radio value="Buy"> 买入/做多 </Radio>
-              <Radio value="Sell"> 卖出/做空 </Radio>
+              <Radio value="Buy"> 买入 </Radio>
+              <Radio value="Sell"> 卖出 </Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item
@@ -79,10 +70,22 @@ const UnifiedMargin = ({ open, setOpen }) => {
               <Radio value="Market"> 市价单 </Radio>
             </Radio.Group>
           </Form.Item>
+          <Form.Item
+            label="挂单数量"
+            name="orderQty"
+            rules={[{ required: true, message: "挂单数量必填！" }]}
+          >
+            <InputNumber />
+          </Form.Item>
+          {form.getFieldValue("orderType") === "Market" ? null : (
+            <Form.Item label="价格" name="price">
+              <InputNumber />
+            </Form.Item>
+          )}
         </Form>
       </Modal>
     </div>
   )
 }
 
-export default UnifiedMargin
+export default Spot

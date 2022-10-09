@@ -4,11 +4,11 @@ import {
   Input,
   Select,
 } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils/"
+import { eventBus, WebViewMessage } from "../../../../utils"
 import { v4 as uuidv4 } from 'uuid'
 
-import React from "react"
-const Transfer = ({ isTransfer, coin, setIsTransfer }) => {
+import React, { FC } from "react"
+const Transfer: FC<any> = ({ isTransfer, coin, setIsTransfer }) => {
     
   const [form] = Form.useForm()
     const handleOk = async () => {
@@ -29,7 +29,7 @@ const Transfer = ({ isTransfer, coin, setIsTransfer }) => {
         <Form layout="horizontal" form={form}  >
           <Form.Item label="选择币种" name="coin"  rules={[{ required: true, message: '币种必填！' }]}>
             <Select>
-              {coin.map((item) => (
+              {coin.map((item: any) => (
                 <Select.Option value={item.currencyCoin}>
                   {item.currencyCoin}
                 </Select.Option>

@@ -1,7 +1,7 @@
 import { Modal, Form, Button, Input, Radio } from "antd"
 import React, { useEffect } from "react"
-import { eventBus, WebViewMessage } from "../../../../utils/"
-const Bybit = () => {
+import { eventBus, WebViewMessage } from "../../../../utils"
+const Binance = () => {
   const [form] = Form.useForm()
   // useEffect(() => {
   //   form.setFieldsValue({
@@ -10,7 +10,7 @@ const Bybit = () => {
   // }, [])
   const handleOk = async () => {
     const data = await form.validateFields()
-      eventBus.emitVscode(WebViewMessage.setBybitConfig, data)
+      eventBus.emitVscode(WebViewMessage.setBinanceConfig, data)
   }
 
 
@@ -31,25 +31,17 @@ const Bybit = () => {
         </Form.Item>
         <Form.Item
           label="APIKey"
-          name="key"
+          name="api_key"
+          rules={[{ required: true, message: "Key 必填！" }]}
         >
           <Input /> 
         </Form.Item>
         <Form.Item
           label="APISecret"
-          name="secret"
+          name="api_secret"
+          rules={[{ required: true, message: "Secret必填！" }]}
         >
           <Input /> 
-        </Form.Item>
-        <Form.Item
-          label="网络"
-          name="testnet"
-          rules={[{ required: true, message: "网络必填！" }]}
-        >
-          <Radio.Group>
-            <Radio value={true}> TestNet </Radio>
-            <Radio value={false}> Main </Radio>
-          </Radio.Group>
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
         <Button type="primary" onClick={handleOk}>
@@ -61,4 +53,4 @@ const Bybit = () => {
   )
 }
 
-export default Bybit
+export default Binance

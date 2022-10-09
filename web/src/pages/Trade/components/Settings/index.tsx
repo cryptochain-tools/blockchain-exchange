@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react"
 import { Table, Button, Tabs } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils/"
+import { eventBus, WebViewMessage } from "../../../../utils"
 import Bybit from './Bybit'
 import Binance from './Binance'
 import All from './All'
 
 const Settings = () => {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<any>([])
   useEffect(() => {
     eventBus.on("settings", (data) => setData(data))
   }, [])
 
-  const [activeKey, setActiveKey] = useState('All')
-  const onChange = (key) => setActiveKey(key)
+  const [activeKey, setActiveKey] = useState<string>('All')
+  const onChange = (key: string) => setActiveKey(key)
 
   return (
     <div>

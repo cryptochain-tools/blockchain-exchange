@@ -121,6 +121,13 @@ export class App {
         vscode.window.registerTreeDataProvider("MARKET", provider)
         const coinArr =  [
             {
+                label: `Tools`,
+                icon: `cointool.png`,
+                symbol: 'cointool',
+                link: '',
+                extension: "tool.webview"
+            },
+            {
                 label: `Market`,
                 icon: `cointool.png`,
                 symbol: 'cointool',

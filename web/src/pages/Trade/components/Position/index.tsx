@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Table, Button, Divider, Popconfirm, message, Tabs } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils/"
+import { eventBus, WebViewMessage } from "../../../../utils"
 
 
 const Position = () => {
@@ -9,7 +9,7 @@ const Position = () => {
         bybitSpot: []
     })
     useEffect(() => {
-        eventBus.on(WebViewMessage.positions, ({type, data}) => {
+        eventBus.on(WebViewMessage.positions, ({type, data}: any) => {
             setPage({
                 ...page,
                 [type]:data
@@ -57,7 +57,7 @@ const Position = () => {
         {
             title: "平仓",
             dataIndex: "settings",
-            render: (text, r) => {
+            render: (_: any, r:any) => {
                 const confirm = () => {
                     eventBus.emitVscode(WebViewMessage.bybitDvPlaceorder, {
                         category: 'linear',

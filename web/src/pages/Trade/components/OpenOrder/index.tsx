@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Table, Button, Divider, message, Popconfirm, Tabs } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils/"
+import { eventBus, WebViewMessage } from "../../../../utils"
 import { PlusOutlined } from "@ant-design/icons"
 import UnifiedMargin from "./UnifiedMargin"
 import Spot from "./Spot"
@@ -17,7 +17,7 @@ const OpenOrder = () => {
   const [activeKey, setActiveKey] = useState(() => {
     return localStorage.getItem(ItemsName.key) || ItemsName.bybitUnifiedMargin
   })
-  const onChange = (key) => {
+  const onChange = (key: any) => {
     localStorage.setItem(ItemsName.key, key)
     setActiveKey(key)
   }
@@ -30,7 +30,7 @@ const OpenOrder = () => {
     binanceSpot: [],
   })
   useEffect(() => {
-    eventBus.on(WebViewMessage.openOrder, ({ type, data }) => {
+    eventBus.on(WebViewMessage.openOrder, ({ type, data }: any) => {
       setPage({
         ...page,
         [type]: data,
@@ -95,7 +95,7 @@ const OpenOrder = () => {
     {
       title: "设置",
       dataIndex: "settings",
-      render: (text, r) => {
+      render: (_:any, r: any) => {
         const confirm = () => {
           eventBus.emitVscode(WebViewMessage.bybitDvCancelorder, {
             category: "linear",
@@ -121,7 +121,7 @@ const OpenOrder = () => {
     {
       title: "设置",
       dataIndex: "settings",
-      render: (text, r) => {
+      render: (_: string, r: any) => {
         const confirm = () => {
           eventBus.emitVscode(WebViewMessage.bybitSpotCancelorder, {
             orderId: r.orderId,
@@ -145,7 +145,7 @@ const OpenOrder = () => {
     {
       title: "设置",
       dataIndex: "settings",
-      render: (text, r) => {
+      render: (_: string, r: any) => {
         const confirm = () => {
           eventBus.emitVscode(WebViewMessage.binanceSpotCancelorder, {
             orderId: r.orderId,
@@ -194,7 +194,7 @@ const OpenOrder = () => {
     )
   }
 
-  const spotElement = (dataSource, columns, _set) => {
+  const spotElement = (dataSource: any, columns: any, _set: any) => {
     return (
       <div>
         <div

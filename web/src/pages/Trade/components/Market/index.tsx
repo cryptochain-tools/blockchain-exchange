@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { Table, Button } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils/"
+import { eventBus, WebViewMessage } from "../../../../utils"
 import { PlusOutlined } from "@ant-design/icons"
 
 const Market = () => {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<any>([])
   useEffect(() => {
     eventBus.on(WebViewMessage.market, (data) => setData(data))
     return () => eventBus.off(WebViewMessage.market)
@@ -29,7 +29,7 @@ const Market = () => {
     {
       title: "Settings",
       dataIndex: "settings",
-      render: (text) => {
+      render: () => {
         return (
           <div>
             <Button type="link" disabled>
