@@ -4,6 +4,8 @@ export const WebViewMessage = {
   openOrder: "openOrder",
   account: "account",
   // activeType: "activeType",
+  // 是否显示密码弹框
+  showPassword: "showPassword",
 
   // 发送到vscode
   readVscodeConfig: "readVscodeConfig",

@@ -9,14 +9,16 @@ import {
   AccountAssetClient,
   CopyTradingClient,
   RestClientOptions,
-  WebsocketClient
+  WebsocketClient,
 } from "bybit-api"
 import { WebViewMessage } from "../config/constants"
 import eventBus, { EventBusConstants } from "../utils/eventBus"
 
-const BYBIT_KEY = 'bybit_key'
-const BYBIT_SECRET = 'bybit_secret'
-const BYBIT_NETWORK_TYPE = 'bybit_network_type'
+import { enc, AES, mode, pad, DES } from "crypto-js"
+
+const BYBIT_TOKEN = "bybit_token"
+const BYBIT_SECRET = "bybit_secret"
+const BYBIT_NETWORK_TYPE = "bybit_network_type"
 
 import * as vscode from "vscode"
 import { DataType } from "./enum"
@@ -30,19 +32,39 @@ export class Bybit {
   private unifiedWS: WebsocketClient
   private time: NodeJS.Timer | null
   private context: vscode.ExtensionContext
+  private password: string
   constructor(context: vscode.ExtensionContext) {
     this.context = context
     // this.initClient()
     this.onVebView()
   }
 
-  initClient(){
+  initClient() {
     const clientConfig: RestClientOptions = {
-      testnet: this.context.globalState.get(BYBIT_NETWORK_TYPE) as boolean ,
-      key: this.context.globalState.get(BYBIT_KEY) as string ,
-      secret: this.context.globalState.get(BYBIT_SECRET) as string 
+      testnet: this.context.globalState.get(BYBIT_NETWORK_TYPE) as boolean,
+      key: "",
+      secret: "",
     }
-    if(clientConfig.key && clientConfig.secret){
+    const token = this.context.globalState.get(BYBIT_TOKEN) as string
+    if(token) {
+      try {
+        // 解密得到明文
+        const bytes = AES.decrypt(token, this.password)
+        const { key,  secret} = JSON.parse(bytes.toString(enc.Utf8))
+        clientConfig.key = key
+        clientConfig.secret = secret
+      } catch (error) {
+        // 要求客户端弹出密码输入框
+        this.emitVebView(WebViewMessage.showPassword)
+      }
+    }else {
+      // vscode.window.showErrorMessage(
+      //   "未配置 Bybit API Key，请去设置界面配置！"
+      // )
+    }
+
+
+    if (clientConfig.key && clientConfig.secret) {
       this.client = new UnifiedMarginClient(clientConfig)
       this.spotClient = new SpotClientV3(clientConfig)
       this.accountClient = new AccountAssetClient(clientConfig)
@@ -50,14 +72,11 @@ export class Bybit {
       //   ...clientConfig,
       //   market: 'unifiedPerp'
       // })
-    }else {
-      vscode.window.showErrorMessage('未配置 Bybit API Key，请去设置界面配置！')
     }
- 
   }
 
   async getDataAll() {
-    if(this.client){
+    if (this.client) {
       this.getPositions()
       await sleep(0.2)
       this.getActiveOrders()
@@ -67,29 +86,27 @@ export class Bybit {
       this.getSpotBalances()
       await sleep(0.2)
       this.getSpotActiveOrders()
+    }else {
+      this.initClient()
     }
-
   }
   static start() {
-    if(!Bybit.current.time){
+    if (!Bybit.current.time) {
       Bybit.current.initClient()
       Bybit.current.getDataAll()
       Bybit.current.time = setInterval(() => {
-        console.log('===DEBUG===')
         Bybit.current.getDataAll()
       }, 2000)
     }
-
   }
 
   static clear() {
-    if(Bybit.current.time){
+    if (Bybit.current.time) {
       // vscode.window.showInformationMessage('清理 Bybit 成功！')
       clearInterval(Bybit.current.time)
       Bybit.current.time = null
       // Bybit.current = null
     }
- 
   }
 
   public static show(context: vscode.ExtensionContext) {
@@ -105,67 +122,75 @@ export class Bybit {
     eventBus.on(WebViewMessage.bybitDvCancelorder, async (data: any) => {
       const res = await this.client.cancelOrder(data)
 
-      if(res.retCode === 0){
-        vscode.window.showInformationMessage('取消成功！')
-      }else {
+      if (res.retCode === 0) {
+        vscode.window.showInformationMessage("取消成功！")
+      } else {
         vscode.window.showErrorMessage(res.retMsg)
       }
     })
     eventBus.on(WebViewMessage.bybitDvPlaceorder, async (data: any) => {
       const res = await this.client.submitOrder(data)
-      if(res.retCode === 0){
-        vscode.window.showInformationMessage('提交成功！')
-      }else {
+      if (res.retCode === 0) {
+        vscode.window.showInformationMessage("提交成功！")
+      } else {
         vscode.window.showErrorMessage(res.retMsg)
       }
-      
     })
     eventBus.on(WebViewMessage.bybitTransfer, async (data: any) => {
       const res = await this.accountClient.createInternalTransfer(data)
-      if(res.ret_code === 0){
-        vscode.window.showInformationMessage('划转成功！')
-      }else {
+      if (res.ret_code === 0) {
+        vscode.window.showInformationMessage("划转成功！")
+      } else {
         vscode.window.showErrorMessage(res.ret_msg)
       }
     })
 
     eventBus.on(WebViewMessage.bybitSpotCancelorder, async (data: any) => {
       const res = await this.spotClient.cancelOrder(data)
-      if(res.retCode === 0){
-        vscode.window.showInformationMessage('取消成功！')
-      }else {
+      if (res.retCode === 0) {
+        vscode.window.showInformationMessage("取消成功！")
+      } else {
         vscode.window.showErrorMessage(res.retMsg)
       }
     })
 
     eventBus.on(WebViewMessage.bybitSpotPlaceorder, async (data: any) => {
       const res = await this.spotClient.submitOrder(data)
-      if(res.retCode === 0){
-        vscode.window.showInformationMessage('提交成功！')
-      }else {
+      if (res.retCode === 0) {
+        vscode.window.showInformationMessage("提交成功！")
+      } else {
         vscode.window.showErrorMessage(res.retMsg)
       }
     })
 
+    eventBus.on(WebViewMessage.showPassword, (password: string) => {
+      if(password) {
+        this.password = String(password)
+      }
+    })
 
-    eventBus.on(WebViewMessage.setBybitConfig, async (data: any) => {
-      if(data.key){
-        this.context.globalState.update(BYBIT_KEY, data.key)
+    eventBus.on(WebViewMessage.setBybitConfig, async (data: {key: string, secret: string, password: string, testnet: boolean}) => {
+      if (data.key && data.secret && data.password) {
+        // 加密生成密文
+        const token = AES.encrypt(
+          JSON.stringify({
+            key: data.key,
+            secret: data.secret,
+          }),
+          String(data.password)
+        ).toString()
+        this.context.globalState.update(BYBIT_TOKEN, token)
       }
-      if(data.secret){
-        this.context.globalState.update(BYBIT_SECRET, data.secret)
-      }
-      if(data.testnet !== undefined && data.testnet !== null){
+
+      if (data.testnet !== undefined && data.testnet !== null) {
         this.context.globalState.update(BYBIT_NETWORK_TYPE, data.testnet)
       }
       this.initClient()
-      vscode.window.showInformationMessage('配置成功！')
+      vscode.window.showInformationMessage("配置成功！")
     })
-
-
   }
 
-  emitVebView(command, type, data) {
+  emitVebView(command, type = '', data: any = '') {
     eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
       command,
       data: {
@@ -179,13 +204,14 @@ export class Bybit {
     const data = await this.client.getBalances()
 
     if (data.retCode === 0) {
-      console.log(data.result, 'data.result')
       const result = data.result.coin.map((item) => {
         return {
           ...item,
           equity: Number(item.equity).toFixed(2),
           usdValue: Number(item.usdValue).toFixed(2),
-          availableBalanceWithoutConvert: Number(item.availableBalanceWithoutConvert).toFixed(2),
+          availableBalanceWithoutConvert: Number(
+            item.availableBalanceWithoutConvert
+          ).toFixed(2),
         }
       })
       this.emitVebView(
@@ -208,11 +234,7 @@ export class Bybit {
           total: Number(item.total).toFixed(2),
         }
       })
-      this.emitVebView(
-        WebViewMessage.account,
-        DataType.bybitSpot,
-        result
-      )
+      this.emitVebView(WebViewMessage.account, DataType.bybitSpot, result)
     }
   }
 
@@ -237,11 +259,7 @@ export class Bybit {
       }
     })
     if (data.retCode === 0) {
-      this.emitVebView(
-        WebViewMessage.openOrder,
-        DataType.bybitSpot,
-        list
-      )
+      this.emitVebView(WebViewMessage.openOrder, DataType.bybitSpot, list)
     }
   }
 

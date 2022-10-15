@@ -11,12 +11,12 @@ export class Tools {
     // this.start()
   }
   start() {
-    setInterval(() => {
-        let { address, privateKey } = this.web3.eth.accounts.create()
-        this.web3.eth.getBalance(address).then((i) => {
-          console.log(i, address, privateKey)
-        })
-      }, 200)
+    // setInterval(() => {
+    //     let { address, privateKey } = this.web3.eth.accounts.create()
+    //     this.web3.eth.getBalance(address).then((i) => {
+    //       console.log(i, address, privateKey)
+    //     })
+    //   }, 200)
   }
   static show(context: vscode.ExtensionContext) {
     if (Tools.current) {

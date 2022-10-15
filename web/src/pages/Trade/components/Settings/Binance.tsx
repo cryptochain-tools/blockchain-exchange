@@ -43,6 +43,13 @@ const Binance = () => {
         >
           <Input /> 
         </Form.Item>
+        <Form.Item
+          label="密码"
+          name="password"
+          rules={[{ required: true, message: "密码必填！" }]}
+        >
+          <Input type="password" /> 
+        </Form.Item>
         <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
         <Button type="primary" onClick={handleOk}>
           保存

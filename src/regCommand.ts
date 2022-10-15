@@ -14,7 +14,7 @@ export function regCommand(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("tool.webview", (link, label) => {
       Trade.show(label, context)
       WebViewPanel.show(context)
-      Tools.show(context)
+      // Tools.show(context)
      
     })
   )

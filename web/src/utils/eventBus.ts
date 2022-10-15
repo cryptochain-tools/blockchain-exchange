@@ -39,7 +39,7 @@ export interface Emitter<Events extends Record<EventType, unknown>> {
     type: undefined extends Events[Key] ? Key : never
   ): void
 
-  emitVscode<Key extends keyof Events>(type: Key, event: Events[Key]): void
+  emitVscode<Key extends keyof Events>(type: Key, event?: Events[Key]): void
 }
 
 /**
@@ -138,7 +138,7 @@ function mitt<Events extends Record<EventType, unknown>>(): Emitter<Events> {
       }
     },
 
-    emitVscode(type, evt){
+    emitVscode(type, evt: any = ''){
       if(window.vscode){
         window.vscode.postMessage({command: type, data:evt})
       }else {

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import axios from 'axios'
 import { util } from './utils'
-import { GET_EXCHANGE_INFO, HUOBI_LINK, API_ADDRESS } from './config'
+import { GET_EXCHANGE_INFO, UI_LINK, API_ADDRESS } from './config'
 import { TreeProvider } from './treeProvider'
 import { error } from 'console'
 import eventBus, { EventBusConstants } from './utils/eventBus'
@@ -14,7 +14,7 @@ export class App {
     private updateInterval: any
     private timer: any
     private API_ADDRESS: string
-    private HUOBI_LINK: string
+    private UI_LINK: string
     constructor(context: vscode.ExtensionContext){
         this.activateContext = context
         this.statusBarItems = {}
@@ -22,8 +22,9 @@ export class App {
         this.updateInterval = util.getConfigurationTime()
         this.timer = null
         this.API_ADDRESS = '' // 交易对地址
-        this.HUOBI_LINK = '' // 火币网真实交易地址
+        this.UI_LINK = '' // 真实交易地址
         this.init()
+        this.initBar()
         context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => this.handleConfigChange()))
     }
     /*
@@ -57,7 +58,8 @@ export class App {
             }
         }).
         catch((error) => {
-            console.error(error)
+            vscode.window.showErrorMessage("Api 请求出错了！", this.API_ADDRESS)
+            console.error(error, 'APIERROR')
         })
     }
     /**
@@ -77,7 +79,7 @@ export class App {
             const { symbol } = item
             const coinInfo = util.getHuobiCoinInfo(symbol.toUpperCase())
             const trading = coinInfo[1]
-            const link = `${this.HUOBI_LINK}${coinInfo.join('_').toLowerCase()}`
+            const link = `${this.UI_LINK}${coinInfo.join('_')}`
             const isFocus = this.coins.indexOf(symbol.toUpperCase()) === -1 ? 0 : 1
 
             if(trading === 'ETH' || trading === 'USDT' || trading === 'BTC'){
@@ -119,6 +121,72 @@ export class App {
         const coinData = this.formatCoinData(data)
         let provider: any = new TreeProvider(vscode.workspace.rootPath, coinData['USDT'], this.activateContext)
         vscode.window.registerTreeDataProvider("MARKET", provider)
+    }
+    /*
+     * 更新底部 StatusBar
+     */
+    updateStatusBar(data: any) {
+        data.forEach((item: any) => {
+            const { symbol } = item
+            const coinInfo = util.getHuobiCoinInfo(symbol.toUpperCase())
+            if (this.coins.indexOf(symbol.toUpperCase()) !== -1) {
+                const statusBarItemsText = `「${coinInfo[0]}」${item.close} ${coinInfo[1]} ${item.close > item.open ? '📈' : '📉'} ${((item.close - item.open) / item.open * 100).toFixed(2)}%`
+                if (this.statusBarItems[symbol]) {
+                    this.statusBarItems[symbol].text = statusBarItemsText
+                } else {
+                    this.statusBarItems[symbol] = this.createStatusBarItem(statusBarItemsText, coinInfo)
+                }
+            }
+        })
+    }
+    /**
+     * 创建statusBar 
+     * @param {string} text 
+     */
+    createStatusBarItem(text = '', coinInfo) {
+        console.log(coinInfo, 'coinInfocoinInfocoinInfo')
+        const barItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
+        barItem.text = text
+        barItem.show()
+        barItem.tooltip = `点击查看 ${coinInfo[0]} 行情`
+        const link = `${this.UI_LINK}${coinInfo.join('_')}`
+        barItem.command = {
+            title: '',
+            command: 'coin.focus',
+            arguments: [link]
+        }
+        // barItem.alignment
+        return barItem
+    }
+    /**
+     * 动态获取交易所api地址
+     */
+    watcher(){
+        /* 每次init重新更新配置文件的内容 */
+        this.coins = util.getConfigurationCoin()
+        this.updateInterval = util.getConfigurationTime()
+
+        this.fetchAllData()
+        this.timer = setInterval(() => {
+            this.fetchAllData()
+        }, this.updateInterval)
+    }
+    init() {
+        this.API_ADDRESS = API_ADDRESS
+        this.UI_LINK = UI_LINK
+        this.watcher()
+        // @ts-ignore
+        // axios.get(GET_EXCHANGE_INFO)
+        // .then((res) => {
+        //     this.API_ADDRESS = res.data.API_ADDRESS
+        //     this.UI_LINK = res.data.UI_LINK
+        //     this.watcher()
+        // }, (error) =>{
+        //     console.log(error)
+        // })
+    }
+
+    initBar() {
         const coinArr =  [
             {
                 label: `Tools`,
@@ -165,59 +233,5 @@ export class App {
         ]
         let providerTool: any = new TreeProvider(vscode.workspace.rootPath, coinArr, this.activateContext)
         vscode.window.registerTreeDataProvider("EXCHANGE", providerTool)
-    }
-    /*
-     * 更新底部 StatusBar
-     */
-    updateStatusBar(data: any) {
-        data.forEach((item: any) => {
-            const { symbol } = item
-            const coinInfo = util.getHuobiCoinInfo(symbol.toUpperCase())
-            if (this.coins.indexOf(symbol.toUpperCase()) !== -1) {
-                const statusBarItemsText = `「${coinInfo[0]}」${item.close} ${coinInfo[1]} ${item.close > item.open ? '📈' : '📉'} ${((item.close - item.open) / item.open * 100).toFixed(2)}%`
-                if (this.statusBarItems[symbol]) {
-                    this.statusBarItems[symbol].text = statusBarItemsText
-                } else {
-                    this.statusBarItems[symbol] = this.createStatusBarItem(statusBarItemsText)
-                }
-            }
-        })
-    }
-    /**
-     * 创建statusBar 
-     * @param {string} text 
-     */
-    createStatusBarItem(text = '') {
-        const barItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
-        barItem.text = text
-        barItem.show()
-        return barItem
-    }
-    /**
-     * 动态获取交易所api地址
-     */
-    watcher(){
-        /* 每次init重新更新配置文件的内容 */
-        this.coins = util.getConfigurationCoin()
-        this.updateInterval = util.getConfigurationTime()
-
-        this.fetchAllData()
-        this.timer = setInterval(() => {
-            this.fetchAllData()
-        }, this.updateInterval)
-    }
-    init() {
-        this.API_ADDRESS = API_ADDRESS
-        this.HUOBI_LINK = HUOBI_LINK
-        this.watcher()
-        // @ts-ignore
-        // axios.get(GET_EXCHANGE_INFO)
-        // .then((res) => {
-        //     this.API_ADDRESS = res.data.API_ADDRESS
-        //     this.HUOBI_LINK = res.data.HUOBI_LINK
-        //     this.watcher()
-        // }, (error) =>{
-        //     console.log(error)
-        // })
     }
 }

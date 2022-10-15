@@ -42,6 +42,13 @@ const Bybit = () => {
           <Input /> 
         </Form.Item>
         <Form.Item
+          label="密码"
+          name="password"
+          rules={[{ required: true, message: "密码必填！" }]}
+        >
+          <Input type="password" /> 
+        </Form.Item>
+        <Form.Item
           label="网络"
           name="testnet"
           rules={[{ required: true, message: "网络必填！" }]}

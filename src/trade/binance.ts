@@ -1,8 +1,9 @@
 import { MainClient, RestClientOptions } from "binance"
 import { WebViewMessage } from "../config/constants"
 import eventBus, { EventBusConstants } from "../utils/eventBus"
+import { enc, AES, mode, pad, DES } from "crypto-js"
 
-const BINANCE_KEY = "binance_key"
+const BINANCE_TOKEN = "binance_token"
 const BINANCE_SECRET = "binance_secret"
 const BINANCE_NETWORK_TYPE = "binance_network_type"
 
@@ -15,6 +16,7 @@ export class Binance {
   private client: MainClient
   private time: NodeJS.Timer | null
   private context: vscode.ExtensionContext
+  private password: string
   constructor(context: vscode.ExtensionContext) {
     this.context = context
     // this.initClient()
@@ -23,15 +25,28 @@ export class Binance {
 
   initClient() {
     const clientConfig: RestClientOptions = {
-      api_key: this.context.globalState.get(BINANCE_KEY) as string,
-      api_secret: this.context.globalState.get(BINANCE_SECRET) as string,
+      api_key: '',
+      api_secret: '',
+    }
+    const token = this.context.globalState.get(BINANCE_TOKEN) as string
+    if(token) {
+      try {
+        // 解密得到明文
+        const bytes = AES.decrypt(token, this.password)
+        const { api_key,  api_secret} = JSON.parse(bytes.toString(enc.Utf8))
+        clientConfig.api_key = api_key
+        clientConfig.api_secret = api_secret
+      } catch (error) {
+        // 要求客户端弹出密码输入框
+        this.emitVebView(WebViewMessage.showPassword)
+      }
+    }else {
+      // vscode.window.showErrorMessage(
+      //   "未配置 Binance API Key，请去设置界面配置 ！"
+      // )
     }
     if (clientConfig.api_key && clientConfig.api_secret) {
       this.client = new MainClient(clientConfig)
-    } else {
-      vscode.window.showErrorMessage(
-        "未配置 Binance API Key，请去设置界面配置 ！"
-      )
     }
   }
 
@@ -46,6 +61,8 @@ export class Binance {
       this.getSpotBalances()
       await sleep(0.2)
       this.getSpotActiveOrders()
+    }else {
+      this.initClient()
     }
   }
 
@@ -129,19 +146,29 @@ export class Binance {
     //     vscode.window.showErrorMessage(res.retMsg)
     //   }
     // })
-    eventBus.on(WebViewMessage.setBinanceConfig, async (data: any) => {
-      if (data.api_key) {
-        this.context.globalState.update(BINANCE_KEY, data.api_key)
+    eventBus.on(WebViewMessage.showPassword, (password: string) => {
+      if(password) {
+        this.password = String(password)
       }
-      if (data.api_secret) {
-        this.context.globalState.update(BINANCE_SECRET, data.api_secret)
+    })
+    eventBus.on(WebViewMessage.setBinanceConfig, async (data: any) => {
+      if (data.api_key && data.api_secret && data.password) {
+        // 加密生成密文
+        const token = AES.encrypt(
+          JSON.stringify({
+            api_key: data.api_key,
+            api_secret: data.api_secret,
+          }),
+          String(data.password)
+        ).toString()
+        this.context.globalState.update(BINANCE_TOKEN, token)
       }
       this.initClient()
       vscode.window.showInformationMessage("配置成功！")
     })
   }
 
-  emitVebView(command, type, data) {
+  emitVebView(command, type = '', data:any = '') {
     eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
       command,
       data: {
