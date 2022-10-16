@@ -58,8 +58,9 @@ export class App {
             }
         }).
         catch((error) => {
-            vscode.window.showErrorMessage("Api 请求出错了！", this.API_ADDRESS)
-            console.error(error, 'APIERROR')
+            // api 错误
+            // vscode.window.showErrorMessage("Api 请求出错了！", this.API_ADDRESS)
+            // console.error(error, 'APIERROR')
         })
     }
     /**
