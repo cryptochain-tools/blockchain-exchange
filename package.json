@@ -2,7 +2,7 @@
   "name": "blockchain-exchange",
   "displayName": "blockchain-exchange",
   "description": "vscode 配置状态栏查看 比特币价格；vscode 极简对接 Bybit Binance(币安) 交易所，通过 vscode 挂单、撤单、划转等",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "publisher": "wq599263163",
   "engines": {
     "vscode": "^1.71.0"

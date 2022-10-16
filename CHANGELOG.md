@@ -1,5 +1,8 @@
 # 更改日志
 
+## 1.0.7
+- 开放源代码 https://github.com/wq599263163/blockchain-exchange
+
 ### 1.0.6
 - 去除 API 请求错误提示
 
