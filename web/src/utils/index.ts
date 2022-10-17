@@ -1,7 +1,4 @@
 import eventBus from './eventBus'
-import { WebViewMessage } from "../../../src/config/constants"
+import { WebViewMessage } from '../../../src/config/constants'
 
-export {
-    eventBus,
-    WebViewMessage
-}
+export { eventBus, WebViewMessage }

@@ -1,10 +1,10 @@
-import * as vscode from "vscode"
-import { util } from "./utils"
-import * as path from "path"
-import * as fse from "fs-extra"
-import eventBus, { EventBusConstants } from "./utils/eventBus"
-import { Binance } from "./trade/binance"
-import { Bybit } from "./trade/bybit"
+import * as vscode from 'vscode'
+import { util } from './utils'
+import * as path from 'path'
+import * as fse from 'fs-extra'
+import eventBus, { EventBusConstants } from './utils/eventBus'
+import { Binance } from './trade/binance'
+import { Bybit } from './trade/bybit'
 
 export class WebViewPanel {
   private static currentPanel: WebViewPanel | undefined
@@ -24,9 +24,13 @@ export class WebViewPanel {
   }
 
   private async initialize() {
-    this._panel.onDidDispose(() => {
-      this.dispose()
-    }, null, this._disposables)
+    this._panel.onDidDispose(
+      () => {
+        this.dispose()
+      },
+      null,
+      this._disposables
+    )
     this._panel.webview.onDidReceiveMessage(
       async (message) => {
         eventBus.emit(message.command, message.data)
@@ -35,21 +39,19 @@ export class WebViewPanel {
       this._disposables
     )
 
-
-    eventBus.on(EventBusConstants.SEND_VEBVIEW_MESSAGE, (data: {
-      command: string,
-      data: any
-    }) => {
-      this._panel.webview.postMessage({
-        command: data.command,
-        data: data.data,
-      })
-    })
+    eventBus.on(
+      EventBusConstants.SEND_VEBVIEW_MESSAGE,
+      (data: { command: string; data: any }) => {
+        this._panel.webview.postMessage({
+          command: data.command,
+          data: data.data,
+        })
+      }
+    )
     this._panel.webview.html = await getWebviewContent(this._extensionPath)
   }
 
   public static show(context: vscode.ExtensionContext) {
-   
     if (WebViewPanel.currentPanel) {
       const column = vscode.window.activeTextEditor
         ? vscode.window.activeTextEditor.viewColumn
@@ -59,8 +61,8 @@ export class WebViewPanel {
     }
 
     const panel = vscode.window.createWebviewPanel(
-      "Template",
-      util.localize("template"),
+      'Template',
+      util.localize('template'),
       vscode.ViewColumn.Active,
       {
         // 启用JS，默认禁用
@@ -69,7 +71,7 @@ export class WebViewPanel {
         retainContextWhenHidden: true,
         localResourceRoots: [
           vscode.Uri.file(
-            path.join(context.extensionPath, "out/webDist/assets")
+            path.join(context.extensionPath, 'out/webDist/assets')
           ),
           // vscode.Uri.file(path.join(context.extensionPath, "src/web", "dist")),
         ],
@@ -96,12 +98,10 @@ export class WebViewPanel {
 
 async function getWebviewContent(extensionPath: string) {
   const distPath = vscode.Uri.file(
-    path.join(extensionPath, "out/webDist")
-  ).with({ scheme: "vscode-resource" })
-  let html = await fse.readFile(
-    path.join(__dirname, "webDist/index.html")
-  )
-  
+    path.join(extensionPath, 'out/webDist')
+  ).with({ scheme: 'vscode-resource' })
+  let html = await fse.readFile(path.join(__dirname, 'webDist/index.html'))
+
   const hrefReg = /href=(["']{1})\/{1}([^\/])/gi
   const srcReg = /src=(["']{1})\/{1}([^\/])/gi
   const str = html
@@ -119,7 +119,7 @@ async function getWebviewContent(extensionPath: string) {
  */
 export function replaceTarget(obj: any, str: string) {
   for (let k in obj) {
-    const target = new RegExp("\\${" + k + "}", "g")
+    const target = new RegExp('\\${' + k + '}', 'g')
     // console.log("target=" + target);
     str = str.replace(target, obj[k])
   }
@@ -127,9 +127,9 @@ export function replaceTarget(obj: any, str: string) {
 }
 
 export function getNonce() {
-  let text = ""
+  let text = ''
   const possible =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYCabcdefghijklmnopqrstuvwxyz0123456789"
+    'ABCDEFGHIJKLMNOPQRSTUVWXYCabcdefghijklmnopqrstuvwxyz0123456789'
   for (let i = 0; i < 32; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length))
   }

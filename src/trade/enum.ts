@@ -1,7 +1,5 @@
-
-
-export const DataType  = {
-    bybitUnifiedMargin: 'bybitUnifiedMargin',
-    bybitSpot:  'bybitSpot',
-    binanceSpot:  'binanceSpot',
+export const DataType = {
+  bybitUnifiedMargin: 'bybitUnifiedMargin',
+  bybitSpot: 'bybitSpot',
+  binanceSpot: 'binanceSpot',
 }

@@ -7,6 +7,7 @@ import defineLazyProperty from 'define-lazy-prop'
 
 import {ChildProcess} from 'child_process'
 
+
 interface Options {
     /**
     Wait for the opened app to exit before fulfilling the promise. If `false` it's fulfilled immediately when opening the app.

@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react"
-import { Table, Button, Divider, message, Popconfirm, Tabs } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils"
-import { PlusOutlined } from "@ant-design/icons"
-import UnifiedMargin from "./UnifiedMargin"
-import Spot from "./Spot"
-import BinanceSpot from "./BinanceSpot"
+import React, { useEffect, useState } from 'react'
+import { Table, Button, Divider, message, Popconfirm, Tabs } from 'antd'
+import { eventBus, WebViewMessage } from '../../../../utils'
+import { PlusOutlined } from '@ant-design/icons'
+import UnifiedMargin from './UnifiedMargin'
+import Spot from './Spot'
+import BinanceSpot from './BinanceSpot'
 
 const ItemsName = {
-  key: "ACTIVE_KEY_OPEN_ORDER",
-  bybitUnifiedMargin: "Bybit-统一保证金",
-  bybitSpot: "Bybit-现货",
-  binanceSpot: "Binance-现货",
+  key: 'ACTIVE_KEY_OPEN_ORDER',
+  bybitUnifiedMargin: 'Bybit-统一保证金',
+  bybitSpot: 'Bybit-现货',
+  binanceSpot: 'Binance-现货',
 }
 
 const OpenOrder = () => {
@@ -40,65 +40,65 @@ const OpenOrder = () => {
   }, [page])
   const base = [
     {
-      title: "现货交易对",
-      dataIndex: "symbol",
-      key: "symbol",
+      title: '现货交易对',
+      dataIndex: 'symbol',
+      key: 'symbol',
     },
     {
-      title: "数量",
-      dataIndex: "orderQty",
-      key: "orderQty",
+      title: '数量',
+      dataIndex: 'orderQty',
+      key: 'orderQty',
     },
     {
-      title: "价格",
-      dataIndex: "orderPrice",
-      key: "orderPrice",
+      title: '价格',
+      dataIndex: 'orderPrice',
+      key: 'orderPrice',
     },
     {
-      title: "类型",
-      dataIndex: "sideCN",
-      key: "sideCN",
+      title: '类型',
+      dataIndex: 'sideCN',
+      key: 'sideCN',
     },
     {
-      title: "订单类型",
-      dataIndex: "orderType",
-      key: "orderType",
+      title: '订单类型',
+      dataIndex: 'orderType',
+      key: 'orderType',
     },
   ]
 
   const columns = [
     {
-      title: "合约",
-      dataIndex: "symbol",
-      key: "symbol",
+      title: '合约',
+      dataIndex: 'symbol',
+      key: 'symbol',
     },
     {
-      title: "数量",
-      dataIndex: "qty",
-      key: "qty",
+      title: '数量',
+      dataIndex: 'qty',
+      key: 'qty',
     },
     {
-      title: "价格",
-      dataIndex: "price",
-      key: "price",
+      title: '价格',
+      dataIndex: 'price',
+      key: 'price',
     },
     {
-      title: "类型",
-      dataIndex: "sideCN",
-      key: "sideCN",
+      title: '类型',
+      dataIndex: 'sideCN',
+      key: 'sideCN',
     },
     {
-      title: "订单类型",
-      dataIndex: "orderType",
-      key: "orderType",
+      title: '订单类型',
+      dataIndex: 'orderType',
+      key: 'orderType',
     },
     {
-      title: "设置",
-      dataIndex: "settings",
-      render: (_:any, r: any) => {
+      title: '设置',
+      dataIndex: 'settings',
+      render: (_: any, r: any) => {
         const confirm = () => {
           eventBus.emitVscode(WebViewMessage.bybitDvCancelorder, {
-            category: "linear",
+            category: 'linear',
             symbol: r.symbol,
             orderId: r.orderId,
           })
@@ -119,8 +119,8 @@ const OpenOrder = () => {
   const bybitSpotColumns = [
     ...base,
     {
-      title: "设置",
-      dataIndex: "settings",
+      title: '设置',
+      dataIndex: 'settings',
       render: (_: string, r: any) => {
         const confirm = () => {
           eventBus.emitVscode(WebViewMessage.bybitSpotCancelorder, {
@@ -143,8 +143,8 @@ const OpenOrder = () => {
   const binanceSpotColumns = [
     ...base,
     {
-      title: "设置",
-      dataIndex: "settings",
+      title: '设置',
+      dataIndex: 'settings',
       render: (_: string, r: any) => {
         const confirm = () => {
           eventBus.emitVscode(WebViewMessage.binanceSpotCancelorder, {
@@ -171,8 +171,8 @@ const OpenOrder = () => {
       <div>
         <div
           style={{
-            textAlign: "right",
-            marginBottom: "10px",
+            textAlign: 'right',
+            marginBottom: '10px',
           }}
         >
           <Button
@@ -199,8 +199,8 @@ const OpenOrder = () => {
       <div>
         <div
           style={{
-            textAlign: "right",
-            marginBottom: "10px",
+            textAlign: 'right',
+            marginBottom: '10px',
           }}
         >
           <Button

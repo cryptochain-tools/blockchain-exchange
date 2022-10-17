@@ -1,9 +1,9 @@
-import { Modal, Form, InputNumber, Select, Radio } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils"
+import { Modal, Form, InputNumber, Select, Radio } from 'antd'
+import { eventBus, WebViewMessage } from '../../../../utils'
 import useCoin from '../../useCoin'
 
-import React, { FC } from "react"
-const Spot: FC<any>= ({ open, setOpen }) => {
+import React, { FC } from 'react'
+const Spot: FC<any> = ({ open, setOpen }) => {
   const coin = useCoin(WebViewMessage.readBybitCoin)
   const [form] = Form.useForm()
   const handleOk = async () => {
@@ -11,14 +11,13 @@ const Spot: FC<any>= ({ open, setOpen }) => {
 
     eventBus.emitVscode(WebViewMessage.bybitSpotPlaceorder, {
       ...data,
-      category: "linear",
+      category: 'linear',
       orderQty: String(data.orderQty),
       orderPrice: String(data.orderPrice),
-      timeInForce: "GTC",
+      timeInForce: 'GTC',
     })
     setOpen(false)
   }
-
 
   const handleCancel = () => {
     setOpen(false)
@@ -42,7 +41,7 @@ const Spot: FC<any>= ({ open, setOpen }) => {
           <Form.Item
             label="选择币种"
             name="symbol"
-            rules={[{ required: true, message: "币种必填！" }]}
+            rules={[{ required: true, message: '币种必填！' }]}
           >
             <Select>
               {coin.map((item: any) => (
@@ -53,7 +52,7 @@ const Spot: FC<any>= ({ open, setOpen }) => {
           <Form.Item
             label="仓位方向"
             name="side"
-            rules={[{ required: true, message: "类型必填！" }]}
+            rules={[{ required: true, message: '类型必填！' }]}
           >
             <Radio.Group>
               <Radio value="Buy"> 买入 </Radio>
@@ -63,7 +62,7 @@ const Spot: FC<any>= ({ open, setOpen }) => {
           <Form.Item
             label="订单类型"
             name="orderType"
-            rules={[{ required: true, message: "订单类型必填！" }]}
+            rules={[{ required: true, message: '订单类型必填！' }]}
           >
             <Radio.Group>
               <Radio value="Limit"> 限价单 </Radio>
@@ -73,11 +72,11 @@ const Spot: FC<any>= ({ open, setOpen }) => {
           <Form.Item
             label="挂单数量"
             name="orderQty"
-            rules={[{ required: true, message: "挂单数量必填！" }]}
+            rules={[{ required: true, message: '挂单数量必填！' }]}
           >
             <InputNumber />
           </Form.Item>
-          {form.getFieldValue("orderType") === "Market" ? null : (
+          {form.getFieldValue('orderType') === 'Market' ? null : (
             <Form.Item label="价格" name="price">
               <InputNumber />
             </Form.Item>

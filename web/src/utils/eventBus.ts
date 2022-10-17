@@ -1,4 +1,4 @@
-if(window.acquireVsCodeApi){
+if (window.acquireVsCodeApi) {
   window.vscode = window.acquireVsCodeApi()
 }
 
@@ -138,16 +138,14 @@ function mitt<Events extends Record<EventType, unknown>>(): Emitter<Events> {
       }
     },
 
-    emitVscode(type, evt: any = ''){
-      if(window.vscode){
-        window.vscode.postMessage({command: type, data:evt})
-      }else {
+    emitVscode(type, evt: any = '') {
+      if (window.vscode) {
+        window.vscode.postMessage({ command: type, data: evt })
+      } else {
         console.error('请在vscode环境运行')
       }
-      
-    }
+    },
   }
 }
-
 
 export default mitt()

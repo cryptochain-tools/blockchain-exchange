@@ -1,20 +1,15 @@
-import * as vscode from "vscode"
-import * as path from "path"
+import * as vscode from 'vscode'
+import * as path from 'path'
 class ItemLucky extends vscode.TreeItem {
   public command: vscode.Command
   public iconPath: string
 
-  constructor(
-    label: any,
-    collapsibleState: any,
-    command: any,
-    iconPath: any
-  ) {
+  constructor(label: any, collapsibleState: any, command: any, iconPath: any) {
     super(label, collapsibleState)
     this.label = label
     this.collapsibleState = collapsibleState
     this.command = command
-    this.contextValue = ""
+    this.contextValue = ''
     this.iconPath = iconPath
   }
 }
@@ -53,8 +48,8 @@ export class TreeProvider {
   newLuckyItem(item: any) {
     const { label, extension, icon, link } = item
 
-    let darkIcon = path.join(__dirname, "..", "img", icon)
-    let lightIcon = path.join(__dirname, "..", "img", icon)
+    let darkIcon = path.join(__dirname, '..', 'img', icon)
+    let lightIcon = path.join(__dirname, '..', 'img', icon)
 
     return new ItemLucky(
       label,

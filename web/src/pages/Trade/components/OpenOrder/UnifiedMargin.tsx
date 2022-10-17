@@ -1,8 +1,8 @@
-import { Modal, Form, InputNumber, Select, Radio } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils"
+import { Modal, Form, InputNumber, Select, Radio } from 'antd'
+import { eventBus, WebViewMessage } from '../../../../utils'
 import useCoin from '../../useCoin'
 
-import React, { FC } from "react"
+import React, { FC } from 'react'
 const UnifiedMargin: FC<any> = ({ open, setOpen }) => {
   const coin = useCoin(WebViewMessage.readBybitCoin)
   const [form] = Form.useForm()
@@ -11,10 +11,10 @@ const UnifiedMargin: FC<any> = ({ open, setOpen }) => {
 
     eventBus.emitVscode(WebViewMessage.bybitDvPlaceorder, {
       ...data,
-      category: "linear",
+      category: 'linear',
       qty: String(data.qty),
       price: String(data.price),
-      timeInForce: "GoodTillCancel",
+      timeInForce: 'GoodTillCancel',
     })
     setOpen(false)
   }
@@ -41,7 +41,7 @@ const UnifiedMargin: FC<any> = ({ open, setOpen }) => {
           <Form.Item
             label="选择币种"
             name="symbol"
-            rules={[{ required: true, message: "币种必填！" }]}
+            rules={[{ required: true, message: '币种必填！' }]}
           >
             <Select>
               {coin.map((item: any) => (
@@ -52,7 +52,7 @@ const UnifiedMargin: FC<any> = ({ open, setOpen }) => {
           <Form.Item
             label="挂单数量"
             name="qty"
-            rules={[{ required: true, message: "挂单数量必填！" }]}
+            rules={[{ required: true, message: '挂单数量必填！' }]}
           >
             <InputNumber />
           </Form.Item>
@@ -62,7 +62,7 @@ const UnifiedMargin: FC<any> = ({ open, setOpen }) => {
           <Form.Item
             label="仓位方向"
             name="side"
-            rules={[{ required: true, message: "类型必填！" }]}
+            rules={[{ required: true, message: '类型必填！' }]}
           >
             <Radio.Group>
               <Radio value="Buy"> 买入/做多 </Radio>
@@ -72,7 +72,7 @@ const UnifiedMargin: FC<any> = ({ open, setOpen }) => {
           <Form.Item
             label="订单类型"
             name="orderType"
-            rules={[{ required: true, message: "订单类型必填！" }]}
+            rules={[{ required: true, message: '订单类型必填！' }]}
           >
             <Radio.Group>
               <Radio value="Limit"> 限价单 </Radio>

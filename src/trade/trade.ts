@@ -22,7 +22,7 @@ export class Trade {
 
   /** 监听 Webview 事件 */
   private onVebView() {
-    eventBus.on(WebViewMessage.readVscodeConfig, (type) => {
+      eventBus.on(WebViewMessage.readVscodeConfig, (type) => {
       if(type === WebViewMessage.readActiveType) {
         eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
           command: WebViewMessage.readActiveType,

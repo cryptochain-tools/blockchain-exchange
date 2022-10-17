@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react"
-import { Table, Button } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils"
-import { PlusOutlined } from "@ant-design/icons"
+import React, { useEffect, useState } from 'react'
+import { Table, Button } from 'antd'
+import { eventBus, WebViewMessage } from '../../../../utils'
+import { PlusOutlined } from '@ant-design/icons'
 
 const Market = () => {
   const [data, setData] = useState<any>([])
@@ -12,23 +12,23 @@ const Market = () => {
 
   const columns = [
     {
-      title: "Coin",
-      dataIndex: "coin",
-      key: "coin",
+      title: 'Coin',
+      dataIndex: 'coin',
+      key: 'coin',
     },
     {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
     },
     {
-      title: "Settings",
-      dataIndex: "settings",
+      title: 'Settings',
+      dataIndex: 'settings',
       render: () => {
         return (
           <div>
@@ -48,8 +48,8 @@ const Market = () => {
     <div>
       <div
         style={{
-          textAlign: "right",
-          marginBottom: "10px",
+          textAlign: 'right',
+          marginBottom: '10px',
         }}
       >
         <Button type="primary" icon={<PlusOutlined />} disabled>

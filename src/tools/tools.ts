@@ -1,4 +1,4 @@
-import * as vscode from "vscode"
+import * as vscode from 'vscode'
 import Web3 from 'web3'
 export class Tools {
   private static current: Tools | undefined

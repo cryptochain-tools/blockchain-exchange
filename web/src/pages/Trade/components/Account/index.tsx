@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react"
-import { Table, Button, Divider, message, Popconfirm, Tabs, Modal } from "antd"
-import { eventBus, WebViewMessage } from "../../../../utils"
-import Transfer from "../Transfer"
+import React, { useEffect, useState } from 'react'
+import { Table, Button, Divider, message, Popconfirm, Tabs, Modal } from 'antd'
+import { eventBus, WebViewMessage } from '../../../../utils'
+import Transfer from '../Transfer'
 const ItemsName = {
   key: 'ACTIVE_KEY_ACCOUNT',
   bybitUnifiedMargin: 'Bybit-统一保证金',
@@ -12,16 +12,16 @@ const ItemsName = {
 const Account = () => {
   const [activeKey, setActiveKey] = useState(() => {
     return localStorage.getItem(ItemsName.key) || ItemsName.bybitUnifiedMargin
-})
-const onChange = (key: string) => {
+  })
+  const onChange = (key: string) => {
     localStorage.setItem(ItemsName.key, key)
     setActiveKey(key)
-}
+  }
   const [isTransfer, setIsTransfer] = useState(false)
   const [page, setPage] = useState({
     bybitUnifiedMargin: [],
     bybitSpot: [],
-    binanceSpot:[]
+    binanceSpot: [],
   })
   useEffect(() => {
     eventBus.on(WebViewMessage.account, ({ type, data }: any) => {
@@ -34,51 +34,51 @@ const onChange = (key: string) => {
   }, [page])
   const base = [
     {
-      title: "币种",
-      dataIndex: "coin",
-      key: "coin",
+      title: '币种',
+      dataIndex: 'coin',
+      key: 'coin',
     },
     {
-      title: "可用余额",
-      dataIndex: "free",
-      key: "free",
+      title: '可用余额',
+      dataIndex: 'free',
+      key: 'free',
     },
     {
-      title: "冻结余额",
-      dataIndex: "locked",
-      key: "locked",
+      title: '冻结余额',
+      dataIndex: 'locked',
+      key: 'locked',
     },
     {
-      title: "总金额",
-      dataIndex: "total",
-      key: "total",
-    }
+      title: '总金额',
+      dataIndex: 'total',
+      key: 'total',
+    },
   ]
 
   const columns = [
     {
-      title: "币种",
-      dataIndex: "currencyCoin",
-      key: "currencyCoin",
+      title: '币种',
+      dataIndex: 'currencyCoin',
+      key: 'currencyCoin',
     },
     {
-      title: "数量",
-      dataIndex: "equity",
-      key: "equity",
+      title: '数量',
+      dataIndex: 'equity',
+      key: 'equity',
     },
     {
-      title: "价值(USD)",
-      dataIndex: "usdValue",
-      key: "usdValue",
+      title: '价值(USD)',
+      dataIndex: 'usdValue',
+      key: 'usdValue',
     },
     {
-      title: "可用余额",
-      dataIndex: "availableBalanceWithoutConvert",
-      key: "availableBalanceWithoutConvert",
+      title: '可用余额',
+      dataIndex: 'availableBalanceWithoutConvert',
+      key: 'availableBalanceWithoutConvert',
     },
     {
-      title: "设置",
-      dataIndex: "settings",
+      title: '设置',
+      dataIndex: 'settings',
       render: (_: string, r: any) => {
         return (
           <div>
@@ -93,8 +93,8 @@ const onChange = (key: string) => {
   const bybitSpotColumns = [
     ...base,
     {
-      title: "设置",
-      dataIndex: "settings",
+      title: '设置',
+      dataIndex: 'settings',
       render: (_: string, r: any) => {
         return (
           <div>
@@ -110,8 +110,8 @@ const onChange = (key: string) => {
   const binanceSpotColumns = [
     ...base,
     {
-      title: "设置",
-      dataIndex: "settings",
+      title: '设置',
+      dataIndex: 'settings',
       render: (_: string, r: any) => {
         return (
           <div>
@@ -127,7 +127,7 @@ const onChange = (key: string) => {
   return (
     <div
       style={{
-        paddingBottom: "50px",
+        paddingBottom: '50px',
       }}
     >
       <div>

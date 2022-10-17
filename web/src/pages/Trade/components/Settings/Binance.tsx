@@ -1,18 +1,17 @@
-import { Modal, Form, Button, Input, Radio } from "antd"
-import React, { useEffect } from "react"
-import { eventBus, WebViewMessage } from "../../../../utils"
+import { Modal, Form, Button, Input, Radio } from 'antd'
+import React, { useEffect } from 'react'
+import { eventBus, WebViewMessage } from '../../../../utils'
 const Binance = () => {
   const [form] = Form.useForm()
   // useEffect(() => {
   //   form.setFieldsValue({
-  //       testnet: false, 
+  //       testnet: false,
   //   })
   // }, [])
   const handleOk = async () => {
     const data = await form.validateFields()
-      eventBus.emitVscode(WebViewMessage.setBinanceConfig, data)
+    eventBus.emitVscode(WebViewMessage.setBinanceConfig, data)
   }
-
 
   return (
     <div>
@@ -23,38 +22,35 @@ const Binance = () => {
         labelCol={{ span: 3 }}
         wrapperCol={{ span: 16 }}
       >
-        
-        <Form.Item
-          label="注意"
-        >
+        <Form.Item label="注意">
           <h4 className="red">OpenApi 申请时候请勿申请带有提现权限的 API</h4>
         </Form.Item>
         <Form.Item
           label="APIKey"
           name="api_key"
-          rules={[{ required: true, message: "Key 必填！" }]}
+          rules={[{ required: true, message: 'Key 必填！' }]}
         >
-          <Input /> 
+          <Input />
         </Form.Item>
         <Form.Item
           label="APISecret"
           name="api_secret"
-          rules={[{ required: true, message: "Secret必填！" }]}
+          rules={[{ required: true, message: 'Secret必填！' }]}
         >
-          <Input /> 
+          <Input />
         </Form.Item>
         <Form.Item
           label="密码"
           name="password"
-          rules={[{ required: true, message: "密码必填！" }]}
+          rules={[{ required: true, message: '密码必填！' }]}
         >
-          <Input type="password" /> 
+          <Input type="password" />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
-        <Button type="primary" onClick={handleOk}>
-          保存
-        </Button>
-      </Form.Item>
+          <Button type="primary" onClick={handleOk}>
+            保存
+          </Button>
+        </Form.Item>
       </Form>
     </div>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from 'react'
 import { WebViewMessage, eventBus } from '../../utils'
 const useCoin = (type: string) => {
   const [coin, setCoin] = useState<any>([])
@@ -7,10 +7,7 @@ const useCoin = (type: string) => {
       setCoin(data)
     })
 
-    eventBus.emitVscode(
-      WebViewMessage.readVscodeConfig,
-      type
-    )
+    eventBus.emitVscode(WebViewMessage.readVscodeConfig, type)
 
     return () => eventBus.off(type)
   }, [coin])

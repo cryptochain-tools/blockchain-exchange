@@ -135,7 +135,7 @@ function mitt<Events extends Record<EventType, unknown>>(): Emitter<Events> {
 }
 
 export enum EventBusConstants {
-    SEND_VEBVIEW_MESSAGE = 'send_vebview_message'
+  SEND_VEBVIEW_MESSAGE = 'send_vebview_message',
 }
 
 export default mitt()

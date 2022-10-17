@@ -1,6 +1,6 @@
-import { enc, AES, mode, pad, DES } from "crypto-js"
+import { enc, AES, mode, pad, DES } from 'crypto-js'
 
-const iv = enc.Utf8.parse("ABCDEF1234123412") //十六位十六进制数作为密钥偏移量
+const iv = enc.Utf8.parse('ABCDEF1234123412') //十六位十六进制数作为密钥偏移量
 
 //加密方法
 export function Encrypt(word, k) {
@@ -16,7 +16,7 @@ export function Encrypt(word, k) {
 
 //解密方法
 export function Decrypt(word, k) {
-    const key = enc.Utf8.parse(k) //十六位十六进制数作为密钥
+  const key = enc.Utf8.parse(k) //十六位十六进制数作为密钥
   let encryptedHexStr = enc.Hex.parse(word)
   let srcs = enc.Base64.stringify(encryptedHexStr)
   let decrypt = AES.decrypt(srcs, key, {
@@ -28,7 +28,7 @@ export function Decrypt(word, k) {
   return decryptedStr.toString()
 }
 
-const desKey = enc.Utf8.parse("11")
+const desKey = enc.Utf8.parse('11')
 
 //DES加密方法
 export function desEncrypt(message) {
@@ -40,10 +40,10 @@ export function desEncrypt(message) {
 }
 //DES解密方法
 export function desDecrypt(ciphertext) {
-  if (ciphertext === "" || ciphertext === null || ciphertext === undefined) {
-    return ""
+  if (ciphertext === '' || ciphertext === null || ciphertext === undefined) {
+    return ''
   }
-  if (typeof ciphertext !== "string") {
+  if (typeof ciphertext !== 'string') {
     ciphertext = ciphertext.toString()
   }
   var decrypted = DES.decrypt(

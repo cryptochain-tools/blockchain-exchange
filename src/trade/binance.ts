@@ -1,15 +1,15 @@
-import { MainClient, RestClientOptions } from "binance"
-import { WebViewMessage } from "../config/constants"
-import eventBus, { EventBusConstants } from "../utils/eventBus"
-import { enc, AES, mode, pad, DES } from "crypto-js"
+import { MainClient, RestClientOptions } from 'binance'
+import { WebViewMessage } from '../config/constants'
+import eventBus, { EventBusConstants } from '../utils/eventBus'
+import { enc, AES, mode, pad, DES } from 'crypto-js'
 
-const BINANCE_TOKEN = "binance_token"
-const BINANCE_SECRET = "binance_secret"
-const BINANCE_NETWORK_TYPE = "binance_network_type"
+const BINANCE_TOKEN = 'binance_token'
+const BINANCE_SECRET = 'binance_secret'
+const BINANCE_NETWORK_TYPE = 'binance_network_type'
 
-import * as vscode from "vscode"
-import { DataType } from "./enum"
-import { sleep } from "../utils/sleep"
+import * as vscode from 'vscode'
+import { DataType } from './enum'
+import { sleep } from '../utils/sleep'
 
 export class Binance {
   private static current: Binance | undefined | null
@@ -29,18 +29,18 @@ export class Binance {
       api_secret: '',
     }
     const token = this.context.globalState.get(BINANCE_TOKEN) as string
-    if(token) {
+    if (token) {
       try {
         // 解密得到明文
         const bytes = AES.decrypt(token, this.password)
-        const { api_key,  api_secret} = JSON.parse(bytes.toString(enc.Utf8))
+        const { api_key, api_secret } = JSON.parse(bytes.toString(enc.Utf8))
         clientConfig.api_key = api_key
         clientConfig.api_secret = api_secret
       } catch (error) {
         // 要求客户端弹出密码输入框
         this.emitVebView(WebViewMessage.showPassword)
       }
-    }else {
+    } else {
       // vscode.window.showErrorMessage(
       //   "未配置 Binance API Key，请去设置界面配置 ！"
       // )
@@ -61,30 +61,28 @@ export class Binance {
       this.getSpotBalances()
       await sleep(0.2)
       this.getSpotActiveOrders()
-    }else {
+    } else {
       this.initClient()
     }
   }
 
   static start() {
-    if(!Binance.current.time){
+    if (!Binance.current.time) {
       Binance.current.initClient()
       Binance.current.getDataAll()
       Binance.current.time = setInterval(() => {
         Binance.current.getDataAll()
       }, 2000)
     }
-
   }
 
   static clear() {
-    if(Binance.current.time){
+    if (Binance.current.time) {
       // vscode.window.showInformationMessage('清理 Binance 成功！')
       clearInterval(Binance.current.time)
       Binance.current.time = null
       // Bybit.current = null
     }
-
   }
 
   public static show(context: vscode.ExtensionContext) {
@@ -110,9 +108,9 @@ export class Binance {
         // 测试订单
         // const _data = await this.client.testNewOrder(data)
         await this.client.submitNewOrder(data)
-        vscode.window.showInformationMessage("提交成功！")
+        vscode.window.showInformationMessage('提交成功！')
       } catch (error) {
-        vscode.window.showErrorMessage("提交失败！")
+        vscode.window.showErrorMessage('提交失败！')
       }
 
       // if(res.retCode === 0){
@@ -133,9 +131,9 @@ export class Binance {
       try {
         await this.client.cancelOrder(data)
 
-        vscode.window.showInformationMessage("取消成功！")
+        vscode.window.showInformationMessage('取消成功！')
       } catch (error) {
-        vscode.window.showErrorMessage("取消失败！")
+        vscode.window.showErrorMessage('取消失败！')
       }
     })
     // eventBus.on(WebViewMessage.BinanceSpotPlaceorder, async (data: any) => {
@@ -147,7 +145,7 @@ export class Binance {
     //   }
     // })
     eventBus.on(WebViewMessage.showPassword, (password: string) => {
-      if(password) {
+      if (password) {
         this.password = String(password)
       }
     })
@@ -164,11 +162,11 @@ export class Binance {
         this.context.globalState.update(BINANCE_TOKEN, token)
       }
       this.initClient()
-      vscode.window.showInformationMessage("配置成功！")
+      vscode.window.showInformationMessage('配置成功！')
     })
   }
 
-  emitVebView(command, type = '', data:any = '') {
+  emitVebView(command, type = '', data: any = '') {
     eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
       command,
       data: {
@@ -179,7 +177,7 @@ export class Binance {
   }
 
   private async getSpotBalances() {
-    const data = await this.client.postPrivate("/sapi/v3/asset/getUserAsset")
+    const data = await this.client.postPrivate('/sapi/v3/asset/getUserAsset')
     const result = data.map((item) => {
       return {
         ...item,
@@ -223,7 +221,7 @@ export class Binance {
         ...item,
         orderQty: Number(item.origQty).toFixed(2),
         orderPrice: Number(item.price).toFixed(2),
-        sideCN: item.side === "BUY" ? "买入" : "卖出",
+        sideCN: item.side === 'BUY' ? '买入' : '卖出',
         orderType: item.type,
       }
     })
