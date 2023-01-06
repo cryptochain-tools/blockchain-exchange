@@ -1,14 +1,14 @@
-import * as vscode from "vscode"
-import { WebViewMessage } from "../config/constants"
-import eventBus, { EventBusConstants } from "../utils/eventBus"
-import { Bybit } from "./bybit"
-import { Binance } from "./binance"
-import { util } from "../utils"
-const ACTIVE_EXCHANGE = "active.exchange"
+import * as vscode from 'vscode'
+import { WebViewMessage } from '../config/constants'
+import eventBus, { EventBusConstants } from '../utils/eventBus'
+import { Bybit } from './bybit'
+import { Binance } from './binance'
+import { util } from '../utils'
+const ACTIVE_EXCHANGE = 'active.exchange'
 enum Exchange {
-  Bybit = "Bybit",
-  Binance = "Binance",
-  All = "All",
+  Bybit = 'Bybit',
+  Binance = 'Binance',
+  All = 'All',
 }
 export class Trade {
   private static currentTrade: Trade | undefined
@@ -22,43 +22,39 @@ export class Trade {
 
   /** 监听 Webview 事件 */
   private onVebView() {
-      eventBus.on(WebViewMessage.readVscodeConfig, (type) => {
-      if(type === WebViewMessage.readActiveType) {
+    eventBus.on(WebViewMessage.readVscodeConfig, (type) => {
+      if (type === WebViewMessage.readActiveType) {
         eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
           command: WebViewMessage.readActiveType,
           data: this.label,
         })
       }
 
-      if(type === WebViewMessage.readBybitCoin) {
+      if (type === WebViewMessage.readBybitCoin) {
         eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
           command: WebViewMessage.readBybitCoin,
           data: util.getConfigurationBybitCoin(),
         })
       }
 
-      if(type === WebViewMessage.readBinanceCoin) {
+      if (type === WebViewMessage.readBinanceCoin) {
         eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
           command: WebViewMessage.readBinanceCoin,
           data: util.getConfigurationBinanceCoin(),
         })
       }
-  
     })
     eventBus.on(WebViewMessage.setAllConfig, (data: any) => {
-      if(data.activeExchange){
+      if (data.activeExchange) {
         vscode.window.showInformationMessage('成功！')
         this.setActiveExchange(data.activeExchange)
         Trade.start(this.context)
       }
-      
     })
   }
 
   /** 设置激活的交易所 */
-  private setActiveExchange(
-    value: string
-  ) {
+  private setActiveExchange(value: string) {
     return this.context.globalState.update(ACTIVE_EXCHANGE, value)
   }
 
@@ -88,15 +84,14 @@ export class Trade {
 
     Trade.currentTrade = new Trade(label, context)
     return Trade.currentTrade
-    
   }
   /**
    * 开始监听
-   * @param context vscode.ExtensionContext 
+   * @param context vscode.ExtensionContext
    * @param isClear 是否清理
    */
   static start(context: vscode.ExtensionContext, isClear = true) {
-    if(isClear) {
+    if (isClear) {
       Trade.clear()
     }
     const exchange = Trade.readActiveExchange(context)

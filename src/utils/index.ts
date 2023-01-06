@@ -1,8 +1,6 @@
-import * as vscode from "vscode"
-import * as path from "path"
-import * as fs from "fs";
-
-
+import * as vscode from 'vscode'
+import * as path from 'path'
+import * as fs from 'fs'
 
 export const util = {
   /**
@@ -23,21 +21,21 @@ export const util = {
       }
     }
   },
-    /**
+  /**
    * 获取配置文件的 Bybit 币对
    */
-     getConfigurationBybitCoin() {
-      const config = vscode.workspace.getConfiguration()
-      return config.get('blockchain-exchange.bybitCoin')
-    },
+  getConfigurationBybitCoin() {
+    const config = vscode.workspace.getConfiguration()
+    return config.get('blockchain-exchange.bybitCoin')
+  },
 
-        /**
+  /**
    * 获取配置文件的 Binance 币对
    */
-         getConfigurationBinanceCoin() {
-          const config = vscode.workspace.getConfiguration()
-          return config.get('blockchain-exchange.binanceCoin')
-        },
+  getConfigurationBinanceCoin() {
+    const config = vscode.workspace.getConfiguration()
+    return config.get('blockchain-exchange.binanceCoin')
+  },
   /**
    * 获取配置文件的监听币种
    */
@@ -53,39 +51,48 @@ export const util = {
     return config.get('blockchain-exchange.updateInterval')
   },
   /**
-   * 获取分割 symbol信息 
+   * 获取分割 symbol信息
    * 例：btcusdt = ['btc', 'usdt']
-   * @param {*} symbol 
+   * @param {*} symbol
    */
   getHuobiCoinInfo(symbol: string) {
     let trading: any
     if (symbol.substr(-3) === 'ETH') {
-        trading = 'ETH'
+      trading = 'ETH'
     } else if (symbol.substr(-3) === 'BTC') {
-        trading = 'BTC'
+      trading = 'BTC'
     } else if (symbol.substr(-4) === 'USDT') {
-        trading = 'USDT'
+      trading = 'USDT'
     }
     return [symbol.split(trading)[0], trading]
   },
 
   /**
- * 从某个HTML文件读取能被Webview加载的HTML内容
- * @param {*} context 上下文
- * @param {*} templatePath 相对于插件根目录的html文件相对路径
- */
- getWebViewContent(context: vscode.ExtensionContext, templatePath: string) {
+   * 从某个HTML文件读取能被Webview加载的HTML内容
+   * @param {*} context 上下文
+   * @param {*} templatePath 相对于插件根目录的html文件相对路径
+   */
+  getWebViewContent(context: vscode.ExtensionContext, templatePath: string) {
     const resourcePath = path.join(context.extensionPath, templatePath)
     const dirPath = path.dirname(resourcePath)
     let html = fs.readFileSync(resourcePath, 'utf-8')
     // vscode不支持直接加载本地资源，需要替换成其专有路径格式，这里只是简单的将样式和JS的路径替换
-    html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
-        return $1 + vscode.Uri.file(path.resolve(dirPath, $2)).with({ scheme: 'vscode-resource' }).toString() + '"'
-    })
+    html = html.replace(
+      /(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g,
+      (m, $1, $2) => {
+        return (
+          $1 +
+          vscode.Uri.file(path.resolve(dirPath, $2))
+            .with({ scheme: 'vscode-resource' })
+            .toString() +
+          '"'
+        )
+      }
+    )
     return html
-},
+  },
 
-localize(key: string) {
+  localize(key: string) {
     // let lan = JSON.parse(process.env.VSCODE_NLS_CONFIG || `{locale: 'zh-cn'}`);
     // if (lan.locale.toLowerCase() === 'zh-cn') {
     //     return language[key].chinese;
@@ -93,10 +100,10 @@ localize(key: string) {
     //     return language[key].english;
     // }
     return 'Exchange'
-},
+  },
 
-getLanguage():string {
+  getLanguage(): string {
     let lan = JSON.parse(process.env.VSCODE_NLS_CONFIG || `{locale: 'zh-CN'}`)
     return lan.locale
-}
+  },
 }

@@ -1,5 +1,5 @@
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import path from 'path'
 // import { createStyleImportPlugin } from "vite-plugin-style-import"
 
@@ -25,16 +25,28 @@ export default defineConfig({
     // }),
   ],
   build: {
-    outDir: "../out/webDist",
+    outDir: '../out/webDist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        // 重点在这里哦
+        // entryFileNames: `assets/[name].${timestamp}.js`,
+        // chunkFileNames: `assets/[name].${timestamp}.js`,
+        // assetFileNames: `assets/[name].${timestamp}.[ext]`
+        entryFileNames: `assets/[name].js`,
+        chunkFileNames: `assets/[name].js`,
+        assetFileNames: `assets/[name].[ext]`,
+      },
+    },
   },
 
   css: {
     preprocessorOptions: {
       less: {
         modifyVars: {
-          "black": "#1e1f1c",
-          "primary-color": "#75715e",
-          "component-background":"#1e1f1c"
+          black: '#1e1f1c',
+          'primary-color': '#75715e',
+          'component-background': '#1e1f1c',
         },
         javascriptEnabled: true,
       },

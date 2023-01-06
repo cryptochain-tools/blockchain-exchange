@@ -48,7 +48,10 @@ export class WebViewPanel {
         })
       }
     )
-    this._panel.webview.html = await getWebviewContent(this._extensionPath)
+    this._panel.webview.html = await getWebviewContent(
+      this._extensionPath,
+      this._panel
+    )
   }
 
   public static show(context: vscode.ExtensionContext) {
@@ -59,7 +62,6 @@ export class WebViewPanel {
       WebViewPanel.currentPanel._panel.reveal(column)
       return
     }
-
     const panel = vscode.window.createWebviewPanel(
       'Template',
       util.localize('template'),
@@ -69,12 +71,11 @@ export class WebViewPanel {
         enableScripts: true,
         // webview被隐藏时保持状态，避免被重置
         retainContextWhenHidden: true,
-        localResourceRoots: [
-          vscode.Uri.file(
-            path.join(context.extensionPath, 'out/webDist/assets')
-          ),
-          // vscode.Uri.file(path.join(context.extensionPath, "src/web", "dist")),
-        ],
+        // localResourceRoots: [
+        //   vscode.Uri.file(
+        //     path.join(context.extensionPath, 'out/webDist/assets')
+        //   ),
+        // ],
       }
     )
 
@@ -96,19 +97,35 @@ export class WebViewPanel {
   }
 }
 
-async function getWebviewContent(extensionPath: string) {
+async function getWebviewContent(
+  extensionPath: string,
+  panel: vscode.WebviewPanel
+) {
   const distPath = vscode.Uri.file(
     path.join(extensionPath, 'out/webDist')
-  ).with({ scheme: 'vscode-resource' })
+  ).with({ scheme: 'vscode-webview-resource' })
   let html = await fse.readFile(path.join(__dirname, 'webDist/index.html'))
 
+  // Get path to resource on disk
+  const css = vscode.Uri.file(
+    path.join(extensionPath, 'out/webDist/assets', 'index.css')
+  )
+  const js = vscode.Uri.file(
+    path.join(extensionPath, 'out/webDist/assets', 'index.js')
+  )
+
+  // And get the special URI to use with the webview
+  const cssSrc = panel.webview.asWebviewUri(css).toString()
+  const jsSrc = panel.webview.asWebviewUri(js).toString()
+  console.log(cssSrc, 'cssSrc========')
   const hrefReg = /href=(["']{1})\/{1}([^\/])/gi
   const srcReg = /src=(["']{1})\/{1}([^\/])/gi
   const str = html
     .toString()
-    .replace(hrefReg, `href=$1${distPath}/$2`)
-    .replace(srcReg, `src=$1${distPath}/$2`)
+    .replace('/assets/index.css', cssSrc)
+    .replace('/assets/index.js', jsSrc)
 
+  console.log(str, 'str1')
   return str
 }
 
