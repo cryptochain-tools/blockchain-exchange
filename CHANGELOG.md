@@ -1,5 +1,7 @@
 # 更改日志
-
+## 1.1.0
+- 修复 webview 无法打开问题
+- 更改源代码库地址 https://github.com/cryptochain-tools/blockchain-exchange
 ## 1.0.7
 - 开放源代码 https://github.com/wq599263163/blockchain-exchange
 

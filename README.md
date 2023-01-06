@@ -6,7 +6,7 @@
 > 
 > 📢 代码不会存储你交易所 APIKey，放在本地缓存内部
 
-[Github](https://github.com/wq599263163/blockchain-exchange)
+[Github](https://github.com/cryptochain-tools/blockchain-exchange)
 
 [Bybit API](https://www.bybit.com/app/user/api-management)
 
