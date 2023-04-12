@@ -211,42 +211,7 @@ export class App {
   initBar() {
     const coinArr = [
       {
-        label: `Tools`,
-        icon: `cointool.png`,
-        symbol: 'cointool',
-        link: '',
-        extension: 'tool.webview',
-      },
-      {
-        label: `Market`,
-        icon: `cointool.png`,
-        symbol: 'cointool',
-        link: '',
-        extension: 'tool.webview',
-      },
-      {
-        label: `Open Orders`,
-        icon: `cointool.png`,
-        symbol: 'cointool',
-        link: '',
-        extension: 'tool.webview',
-      },
-      {
-        label: `Position`,
-        icon: `cointool.png`,
-        symbol: 'cointool',
-        link: '',
-        extension: 'tool.webview',
-      },
-      {
-        label: `Account`,
-        icon: `cointool.png`,
-        symbol: 'cointool',
-        link: '',
-        extension: 'tool.webview',
-      },
-      {
-        label: `Settings`,
+        label: `fundingRate`,
         icon: `cointool.png`,
         symbol: 'cointool',
         link: '',

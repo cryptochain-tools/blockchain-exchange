@@ -3,8 +3,6 @@ import { util } from './utils'
 import * as path from 'path'
 import * as fse from 'fs-extra'
 import eventBus, { EventBusConstants } from './utils/eventBus'
-import { Binance } from './trade/binance'
-import { Bybit } from './trade/bybit'
 
 export class WebViewPanel {
   private static currentPanel: WebViewPanel | undefined
@@ -48,10 +46,35 @@ export class WebViewPanel {
         })
       }
     )
-    this._panel.webview.html = await getWebviewContent(
-      this._extensionPath,
-      this._panel
-    )
+
+    this._panel.webview.html = `
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body{
+          height: 100vh;
+        }
+      </style>
+    </head>
+    <body>
+      <iframe
+      width="100%"
+      height="100%"
+      frameborder="no"
+      sandbox="allow-same-origin allow-scripts allow-forms"
+      src="https://www.fundingrate.cn"
+    >
+    </iframe>
+      
+    </body>
+    </html>
+    
+
+    `
   }
 
   public static show(context: vscode.ExtensionContext) {
@@ -84,8 +107,6 @@ export class WebViewPanel {
 
   public dispose() {
     WebViewPanel.currentPanel = undefined
-    Binance.clear()
-    Bybit.clear()
     eventBus.off(EventBusConstants.SEND_VEBVIEW_MESSAGE)
     // this._panel.dispose()
     while (this._disposables.length) {
