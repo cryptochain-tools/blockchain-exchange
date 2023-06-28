@@ -109,7 +109,7 @@ export class App {
     })
     eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
       command: WebViewMessage.market,
-      data: coinArr['USDT'],
+      data: [...coinArr['USDT'], ...coinArr['ETH'], ...coinArr['BTC']],
     })
     return coinArr
   }
