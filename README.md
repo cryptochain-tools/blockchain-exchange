@@ -8,10 +8,6 @@
 
 [Github](https://github.com/cryptochain-tools/blockchain-exchange)
 
-[Bybit API](https://www.bybit.com/app/user/api-management)
-
-[Binance API](https://www.binance.com/zh-CN/my/settings/api-management)
-
 ## Configuration:
 
 修改用户配置，添加你所需要监控的数字货币

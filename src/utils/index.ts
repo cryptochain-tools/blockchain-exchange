@@ -57,11 +57,11 @@ export const util = {
    */
   getHuobiCoinInfo(symbol: string) {
     let trading: any
-    if (symbol.substr(-3) === 'ETH') {
+    if (symbol.slice(-3) === 'ETH') {
       trading = 'ETH'
-    } else if (symbol.substr(-3) === 'BTC') {
+    } else if (symbol.slice(-3) === 'BTC') {
       trading = 'BTC'
-    } else if (symbol.substr(-4) === 'USDT') {
+    } else if (symbol.slice(-4) === 'USDT') {
       trading = 'USDT'
     }
     return [symbol.split(trading)[0], trading]
@@ -105,5 +105,14 @@ export const util = {
   getLanguage(): string {
     let lan = JSON.parse(process.env.VSCODE_NLS_CONFIG || `{locale: 'zh-CN'}`)
     return lan.locale
+  },
+
+  formatNumber(num: any, x = 1, fixed = 2) {
+    if (num) {
+      const _num = Number(Number(Number(num) * x)).toFixed(fixed)
+      return Number(_num)
+    } else {
+      return 0
+    }
   },
 }
