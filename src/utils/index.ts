@@ -26,7 +26,7 @@ export const util = {
    */
   getConfigurationBybitCoin() {
     const config = vscode.workspace.getConfiguration()
-    return config.get('blockchain-exchange.bybitCoin')
+    return config.get('blockchain-tools.bybitCoin')
   },
 
   /**
@@ -34,21 +34,21 @@ export const util = {
    */
   getConfigurationBinanceCoin() {
     const config = vscode.workspace.getConfiguration()
-    return config.get('blockchain-exchange.binanceCoin')
+    return config.get('blockchain-tools.binanceCoin')
   },
   /**
    * 获取配置文件的监听币种
    */
   getConfigurationCoin() {
     const config = vscode.workspace.getConfiguration()
-    return config.get('blockchain-exchange.coin')
+    return config.get('blockchain-tools.coin')
   },
   /**
    * 获取配置文件的更新时间
    */
   getConfigurationTime() {
     const config = vscode.workspace.getConfiguration()
-    return config.get('blockchain-exchange.updateInterval')
+    return config.get('blockchain-tools.updateInterval')
   },
   /**
    * 获取分割 symbol信息

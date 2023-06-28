@@ -1,8 +1,8 @@
 {
   "name": "blockchain-tools",
-  "displayName": "blockchain-tools",
+  "displayName": "Blockchain Tools",
   "description": "vscode 配置状态栏查看 比特币价格、查看资金费率、常用工具、各交易所下单等",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "publisher": "wq599263163",
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
   "contributes": {
     "configuration": {
       "properties": {
-        "blockchain-exchange.coin": {
+        "blockchain-tools.coin": {
           "type": "array",
           "default": [
             "BTCUSDT",
@@ -45,7 +45,7 @@
           ],
           "description": "配置需要监控的数字货币"
         },
-        "blockchain-exchange.bybitCoin": {
+        "blockchain-tools.bybitCoin": {
           "type": "array",
           "default": [
             "BTCUSDT",
@@ -54,7 +54,7 @@
           ],
           "description": "配置 Bybit 交易对"
         },
-        "blockchain-exchange.binanceCoin": {
+        "blockchain-tools.binanceCoin": {
           "type": "array",
           "default": [
             "BTCBUSD",
@@ -63,7 +63,7 @@
           ],
           "description": "配置 Binance(币安) 交易对"
         },
-        "blockchain-exchange.updateInterval": {
+        "blockchain-tools.updateInterval": {
           "type": "number",
           "default": 10000,
           "description": "配置轮询请求最新数据的时间间隔，单位：毫秒"

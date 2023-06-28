@@ -17,7 +17,7 @@
    * 说明：配置需要监控的数字货币
    * 规则：BTC(比特币) + USDT(交易对) = BTCUSDT
    */
-  "blockchain-exchange.coin": [
+  "blockchain-tools.coin": [
     "BTCUSDT",
     "ETHUSDT"
   ],
@@ -26,7 +26,7 @@
    * 规则：BTC(比特币) + USDT(交易对) = BTCUSDT
    * USDC规则: BTC(比特币) + PERP(USDC交易对) = BTCPERP   
    */
-  "blockchain-exchange.bybitCoin": [
+  "blockchain-tools.bybitCoin": [
      "BTCUSDT",
      "ETHUSDT",
      "BITUSDT"
@@ -35,7 +35,7 @@
    * 说明：配置 Binance(币安) 交易对
    * 规则：BTC(比特币) + BUSD(交易对) = BTCBUSD
    */
-  "blockchain-exchange.binanceCoin": [
+  "blockchain-tools.binanceCoin": [
      "BTCBUSD",
      "ETHBUSD",
      "BNBBUSD"
@@ -44,5 +44,5 @@
    * 说明：轮询请求API时间
    * 单位：毫秒
    */
-  "blockchain-exchange.updateInterval": 10000
+  "blockchain-tools.updateInterval": 10000
 ```
