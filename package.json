@@ -1,6 +1,6 @@
 {
-  "name": "funding-rate",
-  "displayName": "funding-rate",
+  "name": "blockchain-tools",
+  "displayName": "blockchain-tools",
   "description": "vscode 配置状态栏查看 比特币价格；vscode 极简对接 Bybit Binance(币安) 交易所，通过 vscode 挂单、撤单、划转等",
   "version": "1.1.1",
   "publisher": "wq599263163",
@@ -20,6 +20,7 @@
   ],
   "keywords": [
     "btc",
+    "blockchain-tools",
     "funding-rate",
     "资金费率",
     "eth",
@@ -39,7 +40,8 @@
           "type": "array",
           "default": [
             "BTCUSDT",
-            "ETHUSDT"
+            "ETHUSDT",
+            "ETHBTC"
           ],
           "description": "配置需要监控的数字货币"
         },

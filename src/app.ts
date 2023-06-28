@@ -3,7 +3,6 @@ import axios from 'axios'
 import { util } from './utils'
 import { GET_EXCHANGE_INFO, UI_LINK, API_ADDRESS } from './config'
 import { TreeProvider } from './treeProvider'
-import { error } from 'console'
 import eventBus, { EventBusConstants } from './utils/eventBus'
 import { WebViewMessage } from './config/constants'
 
@@ -48,16 +47,14 @@ export class App {
    * 获取接口数据
    */
   fetchAllData() {
-    // @ts-ignore
     axios
       .get(this.API_ADDRESS)
       .then((rep) => {
-        // console.log('this.API_ADDRESS', this.API_ADDRESS)
         const result = rep.data
         if (result.status === 'ok' && result.data.length) {
           this.updateStatusBar(result.data)
           this.updateActivityBar(result.data)
-          this.formatCoinData(result.data)
+          // this.formatCoinData(result.data)
         }
       })
       .catch((error) => {
@@ -72,53 +69,47 @@ export class App {
    */
   formatCoinData(data: any) {
     data = data.sort(util.sortObj('close'))
-    let coinArr: any = {
+    const coinArr = {
       USDT: [],
       ETH: [],
       BTC: [],
       TOOL: [],
     }
 
-    data.forEach((item: any) => {
+    data.forEach((item) => {
       const { symbol } = item
-      const coinInfo = util.getHuobiCoinInfo(symbol.toUpperCase())
-      const trading = coinInfo[1]
-      const link = `${this.UI_LINK}${coinInfo.join('_')}`
+      const [coin, trading] = util.getHuobiCoinInfo(symbol.toUpperCase())
+      const link = `${this.UI_LINK}${coin}_${trading}`
       const isFocus = this.coins.indexOf(symbol.toUpperCase()) === -1 ? 0 : 1
 
-      if (trading === 'ETH' || trading === 'USDT' || trading === 'BTC') {
-        const newItem = {
-          label: `「${coinInfo[0]}」${item.close} ${
-            item.close > item.open ? '📈' : '📉'
-          } ${(((item.close - item.open) / item.open) * 100).toFixed(2)}%`,
-          icon: `star${isFocus}.png`,
-          isFocus,
-          price: item.close,
-          type: `${item.close > item.open ? '📈' : '📉'} ${(
-            ((item.close - item.open) / item.open) *
-            100
-          ).toFixed(2)}%`,
-          coin: coinInfo[0],
-          symbol: symbol,
-          link: link,
-          extension: 'coin.focus',
-        }
-        // 只显示激活的
-        if (isFocus === 1) {
-          coinArr[trading].push(newItem)
-        }
+      const newItem = {
+        label: `「${trading === 'USDT' ? coin : coin + '/' + trading}」${
+          item.close
+        } ${item.close > item.open ? '📈' : '📉'} ${util.formatNumber(
+          (item.close - item.open) / item.open,
+          100
+        )}%`,
+        icon: `star${isFocus}.png`,
+        isFocus,
+        price: item.close,
+        type: `${item.close > item.open ? '📈' : '📉'} ${util.formatNumber(
+          (item.close - item.open) / item.open,
+          100
+        )}%`,
+        coin,
+        symbol,
+        link,
+        extension: 'coin.focus',
+      }
+      // 只显示激活的币种
+
+      if (isFocus === 1) {
+        coinArr[trading].push(newItem)
       }
     })
-    eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
-      command: WebViewMessage.market,
-      data: coinArr['USDT'],
-    })
-    // coinArr['TOOL'].unshift({
-    //     label: `配置`,
-    //     icon: `cointool.png`,
-    //     symbol: 'cointool',
-    //     link: '',
-    //     extension: "tool.webview"
+    // eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
+    //   command: WebViewMessage.market,
+    //   data: coinArr['USDT'],
     // })
     return coinArr
   }
@@ -127,12 +118,17 @@ export class App {
    */
   updateActivityBar(data?: any) {
     const coinData = this.formatCoinData(data)
-    let provider: any = new TreeProvider(
-      vscode.workspace.rootPath,
-      coinData['USDT'],
+    const rootPath = vscode.workspace.workspaceFolders
+
+    const provider = new TreeProvider(
+      rootPath,
+      [...coinData['USDT'], ...coinData['ETH'], ...coinData['BTC']],
       this.activateContext
     )
-    vscode.window.registerTreeDataProvider('MARKET', provider)
+    vscode.window.registerTreeDataProvider(
+      'MARKET',
+      provider as unknown as vscode.TreeDataProvider<any>
+    )
   }
   /*
    * 更新底部 StatusBar
@@ -140,46 +136,47 @@ export class App {
   updateStatusBar(data: any) {
     data.forEach((item: any) => {
       const { symbol } = item
-      const coinInfo = util.getHuobiCoinInfo(symbol.toUpperCase())
-      if (this.coins.indexOf(symbol.toUpperCase()) !== -1) {
-        const statusBarItemsText = `「${coinInfo[0]}」${item.close} ${
-          coinInfo[1]
-        } ${item.close > item.open ? '📈' : '📉'} ${(
-          ((item.close - item.open) / item.open) *
+      const [coin, trading] = util.getHuobiCoinInfo(symbol.toUpperCase())
+      if (this.coins.includes(symbol.toUpperCase())) {
+        const statusBarItemsText = `「${
+          trading === 'USDT' ? coin : coin + '/' + trading
+        }」${util.formatNumber(item.close, 1, 3)} ${util.formatNumber(
+          (item.close - item.open) / item.open,
           100
-        ).toFixed(2)}%`
+        )}%`
         if (this.statusBarItems[symbol]) {
           this.statusBarItems[symbol].text = statusBarItemsText
         } else {
           this.statusBarItems[symbol] = this.createStatusBarItem(
             statusBarItemsText,
-            coinInfo
+            coin,
+            trading
           )
         }
       }
     })
   }
+
   /**
    * 创建statusBar
    * @param {string} text
    */
-  createStatusBarItem(text = '', coinInfo) {
-    console.log(coinInfo, 'coinInfocoinInfocoinInfo')
+  createStatusBarItem(text = '', coin, trading) {
     const barItem = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left
     )
     barItem.text = text
     barItem.show()
-    barItem.tooltip = `点击查看 ${coinInfo[0]} 行情`
-    const link = `${this.UI_LINK}${coinInfo.join('_')}`
+    barItem.tooltip = `点击查看 ${coin} 行情`
+    const link = `${this.UI_LINK}${coin}_${trading}`
     barItem.command = {
       title: '',
       command: 'coin.focus',
       arguments: [link],
     }
-    // barItem.alignment
     return barItem
   }
+
   /**
    * 动态获取交易所api地址
    */
@@ -197,29 +194,28 @@ export class App {
     this.API_ADDRESS = API_ADDRESS
     this.UI_LINK = UI_LINK
     this.watcher()
-    // @ts-ignore
-    // axios.get(GET_EXCHANGE_INFO)
-    // .then((res) => {
-    //     this.API_ADDRESS = res.data.API_ADDRESS
-    //     this.UI_LINK = res.data.UI_LINK
-    //     this.watcher()
-    // }, (error) =>{
-    //     console.log(error)
-    // })
   }
 
   initBar() {
     const coinArr = [
       {
-        label: `fundingRate`,
+        label: `资金费率`,
         icon: `cointool.png`,
         symbol: 'cointool',
-        link: '',
+        link: 'https://www.fundingrate.cn/',
+        extension: 'tool.webview',
+      },
+      {
+        label: `工具`,
+        icon: `cointool.png`,
+        symbol: 'cointool',
+        link: 'https://www.fundingrate.cn/tools',
         extension: 'tool.webview',
       },
     ]
-    let providerTool: any = new TreeProvider(
-      vscode.workspace.rootPath,
+    const rootPath = vscode.workspace.workspaceFolders
+    const providerTool: any = new TreeProvider(
+      rootPath,
       coinArr,
       this.activateContext
     )

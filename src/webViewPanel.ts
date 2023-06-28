@@ -13,15 +13,16 @@ export class WebViewPanel {
 
   private constructor(
     panel: vscode.WebviewPanel,
-    context: vscode.ExtensionContext
+    context: vscode.ExtensionContext,
+    link: string
   ) {
     this._panel = panel
     this._context = context
     this._extensionPath = context.extensionPath
-    this.initialize()
+    this.initialize(link)
   }
 
-  private async initialize() {
+  private async initialize(link: string) {
     this._panel.onDidDispose(
       () => {
         this.dispose()
@@ -66,7 +67,7 @@ export class WebViewPanel {
       height="100%"
       frameborder="no"
       sandbox="allow-same-origin allow-scripts allow-forms"
-      src="https://www.fundingrate.cn"
+      src="${link}"
     >
     </iframe>
       
@@ -77,7 +78,11 @@ export class WebViewPanel {
     `
   }
 
-  public static show(context: vscode.ExtensionContext) {
+  public static show(
+    context: vscode.ExtensionContext,
+    link: string,
+    label: string
+  ) {
     if (WebViewPanel.currentPanel) {
       const column = vscode.window.activeTextEditor
         ? vscode.window.activeTextEditor.viewColumn
@@ -94,21 +99,15 @@ export class WebViewPanel {
         enableScripts: true,
         // webview被隐藏时保持状态，避免被重置
         retainContextWhenHidden: true,
-        // localResourceRoots: [
-        //   vscode.Uri.file(
-        //     path.join(context.extensionPath, 'out/webDist/assets')
-        //   ),
-        // ],
       }
     )
 
-    WebViewPanel.currentPanel = new WebViewPanel(panel, context)
+    WebViewPanel.currentPanel = new WebViewPanel(panel, context, link)
   }
 
   public dispose() {
     WebViewPanel.currentPanel = undefined
     eventBus.off(EventBusConstants.SEND_VEBVIEW_MESSAGE)
-    // this._panel.dispose()
     while (this._disposables.length) {
       const x = this._disposables.pop()
       if (x) {
@@ -116,60 +115,4 @@ export class WebViewPanel {
       }
     }
   }
-}
-
-async function getWebviewContent(
-  extensionPath: string,
-  panel: vscode.WebviewPanel
-) {
-  const distPath = vscode.Uri.file(
-    path.join(extensionPath, 'out/webDist')
-  ).with({ scheme: 'vscode-webview-resource' })
-  let html = await fse.readFile(path.join(__dirname, 'webDist/index.html'))
-
-  // Get path to resource on disk
-  const css = vscode.Uri.file(
-    path.join(extensionPath, 'out/webDist/assets', 'index.css')
-  )
-  const js = vscode.Uri.file(
-    path.join(extensionPath, 'out/webDist/assets', 'index.js')
-  )
-
-  // And get the special URI to use with the webview
-  const cssSrc = panel.webview.asWebviewUri(css).toString()
-  const jsSrc = panel.webview.asWebviewUri(js).toString()
-  console.log(cssSrc, 'cssSrc========')
-  const hrefReg = /href=(["']{1})\/{1}([^\/])/gi
-  const srcReg = /src=(["']{1})\/{1}([^\/])/gi
-  const str = html
-    .toString()
-    .replace('/assets/index.css', cssSrc)
-    .replace('/assets/index.js', jsSrc)
-
-  console.log(str, 'str1')
-  return str
-}
-
-/**
- * 将目标文本中的指定内容替换为对象的元素
- * @param obj js对象形如{key1,key2,key3...}
- * @param str 包含${key}的目标文本
- */
-export function replaceTarget(obj: any, str: string) {
-  for (let k in obj) {
-    const target = new RegExp('\\${' + k + '}', 'g')
-    // console.log("target=" + target);
-    str = str.replace(target, obj[k])
-  }
-  return str
-}
-
-export function getNonce() {
-  let text = ''
-  const possible =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYCabcdefghijklmnopqrstuvwxyz0123456789'
-  for (let i = 0; i < 32; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length))
-  }
-  return text
 }
