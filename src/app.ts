@@ -234,14 +234,14 @@ export class App {
         extension: 'local.webview',
       },
       {
-        label: `资金费率`,
+        label: `Funding Rate`,
         icon: `cointool.png`,
         symbol: 'cointool',
         link: 'https://www.fundingrate.cn/',
         extension: 'tool.webview',
       },
       {
-        label: `工具`,
+        label: `Tools`,
         icon: `cointool.png`,
         symbol: 'cointool',
         link: 'https://www.fundingrate.cn/tools',
