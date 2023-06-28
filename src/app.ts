@@ -107,10 +107,10 @@ export class App {
         coinArr[trading].push(newItem)
       }
     })
-    // eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
-    //   command: WebViewMessage.market,
-    //   data: coinArr['USDT'],
-    // })
+    eventBus.emit(EventBusConstants.SEND_VEBVIEW_MESSAGE, {
+      command: WebViewMessage.market,
+      data: coinArr['USDT'],
+    })
     return coinArr
   }
   /*
@@ -198,6 +198,41 @@ export class App {
 
   initBar() {
     const coinArr = [
+      {
+        label: `Market`,
+        icon: `cointool.png`,
+        symbol: 'cointool',
+        link: '',
+        extension: 'local.webview',
+      },
+      {
+        label: `Open Orders`,
+        icon: `cointool.png`,
+        symbol: 'cointool',
+        link: '',
+        extension: 'local.webview',
+      },
+      {
+        label: `Position`,
+        icon: `cointool.png`,
+        symbol: 'cointool',
+        link: '',
+        extension: 'local.webview',
+      },
+      {
+        label: `Account`,
+        icon: `cointool.png`,
+        symbol: 'cointool',
+        link: '',
+        extension: 'local.webview',
+      },
+      {
+        label: `Settings`,
+        icon: `cointool.png`,
+        symbol: 'cointool',
+        link: '',
+        extension: 'local.webview',
+      },
       {
         label: `资金费率`,
         icon: `cointool.png`,
