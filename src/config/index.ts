@@ -5,4 +5,4 @@ export const API_ADDRESS = 'https://api.huobi.pro/market/tickers'
 
 export const HUOBI_LINK = 'https://www.huobi.pro/zh-cn/exchange/'
 
-export const UI_LINK = 'https://www.binance.com/zh-CN/trade/'
+export const UI_LINK = 'https://www.bybit.com/zh-MY/trade/spot/'

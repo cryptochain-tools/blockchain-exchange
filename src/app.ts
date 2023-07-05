@@ -79,7 +79,7 @@ export class App {
     data.forEach((item) => {
       const { symbol } = item
       const [coin, trading] = util.getHuobiCoinInfo(symbol.toUpperCase())
-      const link = `${this.UI_LINK}${coin}_${trading}`
+      const link = `${this.UI_LINK}${coin}/${trading}`
       const isFocus = this.coins.indexOf(symbol.toUpperCase()) === -1 ? 0 : 1
 
       const newItem = {
@@ -168,7 +168,7 @@ export class App {
     barItem.text = text
     barItem.show()
     barItem.tooltip = `点击查看 ${coin} 行情`
-    const link = `${this.UI_LINK}${coin}_${trading}`
+    const link = `${this.UI_LINK}${coin}/${trading}`
     barItem.command = {
       title: '',
       command: 'coin.focus',

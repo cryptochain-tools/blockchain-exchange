@@ -1,4 +1,5 @@
 # 比特币交易
+[Github](https://github.com/cryptochain-tools/blockchain-exchange)
 
 ## 交易:
 
@@ -6,7 +7,6 @@
 > 
 > 📢 代码不会存储你交易所 APIKey，放在本地缓存内部
 
-[Github](https://github.com/cryptochain-tools/blockchain-exchange)
 
 ## Configuration:
 
