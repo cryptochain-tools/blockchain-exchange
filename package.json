@@ -2,7 +2,7 @@
   "name": "blockchain-tools",
   "displayName": "Blockchain Tools",
   "description": "vscode 配置状态栏查看 比特币价格、查看资金费率、常用工具、各交易所下单等",
-  "version": "1.1.25",
+  "version": "1.1.26",
   "publisher": "wq599263163",
   "repository": {
     "type": "git",
@@ -97,6 +97,10 @@
         {
           "id": "MARKET",
           "name": "Market"
+        },
+        {
+          "id": "MONITORING",
+          "name": "Monitoring"
         }
       ]
     },

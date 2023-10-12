@@ -13,7 +13,6 @@ export class App {
   private updateInterval: any
   private timer: any
   private API_ADDRESS: string
-  private UI_LINK: string
   constructor(context: vscode.ExtensionContext) {
     this.activateContext = context
     this.statusBarItems = {}
@@ -21,7 +20,6 @@ export class App {
     this.updateInterval = util.getConfigurationTime()
     this.timer = null
     this.API_ADDRESS = '' // 交易对地址
-    this.UI_LINK = '' // 真实交易地址
     this.init()
     this.initBar()
     context.subscriptions.push(
@@ -77,8 +75,8 @@ export class App {
 
     data.forEach((item) => {
       const { symbol } = item
-      const [coin, trading] = util.getHuobiCoinInfo(symbol.toUpperCase())
-      const link = `${this.UI_LINK}${coin}/${trading}`
+      const [coin, trading] = util.getCoinInfo(symbol.toUpperCase())
+      const link = `${UI_LINK}${coin}/${trading}`
       const isFocus = this.coins.indexOf(symbol.toUpperCase()) === -1 ? 0 : 1
 
       const newItem = {
@@ -135,7 +133,7 @@ export class App {
   updateStatusBar(data: any) {
     data.forEach((item: any) => {
       const { symbol } = item
-      const [coin, trading] = util.getHuobiCoinInfo(symbol.toUpperCase())
+      const [coin, trading] = util.getCoinInfo(symbol.toUpperCase())
       if (this.coins.includes(symbol.toUpperCase())) {
         const statusBarItemsText = `「${
           trading === 'USDT' ? coin : coin + '/' + trading
@@ -167,7 +165,7 @@ export class App {
     barItem.text = text
     barItem.show()
     barItem.tooltip = `点击查看 ${coin} 行情`
-    const link = `${this.UI_LINK}${coin}/${trading}`
+    const link = `${UI_LINK}${coin}/${trading}`
     barItem.command = {
       title: '',
       command: 'coin.focus',
@@ -191,7 +189,6 @@ export class App {
   }
   init() {
     this.API_ADDRESS = API_ADDRESS
-    this.UI_LINK = UI_LINK
     this.watcher()
   }
 

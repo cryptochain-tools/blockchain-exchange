@@ -63,7 +63,7 @@ export const util = {
    * 例：btcusdt = ['btc', 'usdt']
    * @param {*} symbol
    */
-  getHuobiCoinInfo(symbol: string) {
+  getCoinInfo(symbol: string) {
     let trading: any
     if (symbol.slice(-3) === 'ETH') {
       trading = 'ETH'
