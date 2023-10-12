@@ -102,7 +102,7 @@ export class Bybit {
   static clear() {
     if (Bybit.current.time) {
       // vscode.window.showInformationMessage('清理 Bybit 成功！')
-      clearInterval(Bybit.current.time)
+      clearInterval(Bybit.current.time as unknown as number)
       Bybit.current.time = null
       // Bybit.current = null
     }

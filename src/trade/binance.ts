@@ -79,7 +79,7 @@ export class Binance {
   static clear() {
     if (Binance.current.time) {
       // vscode.window.showInformationMessage('清理 Binance 成功！')
-      clearInterval(Binance.current.time)
+      clearInterval(Binance.current.time as unknown as number)
       Binance.current.time = null
       // Bybit.current = null
     }

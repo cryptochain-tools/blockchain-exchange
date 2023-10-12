@@ -2,14 +2,14 @@
   "name": "blockchain-tools",
   "displayName": "Blockchain Tools",
   "description": "vscode 配置状态栏查看 比特币价格、查看资金费率、常用工具、各交易所下单等",
-  "version": "1.1.20",
+  "version": "1.1.21",
   "publisher": "wq599263163",
   "repository": {
     "type": "git",
     "url": "https://github.com/cryptochain-tools/blockchain-exchange.git"
   },
   "engines": {
-    "vscode": "^1.79.1"
+    "vscode": "^1.83.0"
   },
   "categories": [
     "Other"
@@ -111,8 +111,8 @@
     "@types/fs-extra": "^11.0.1",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
-    "@types/node": "20.3.2",
-    "@types/vscode": "^1.79.1",
+    "@types/node": "20.8.4",
+    "@types/vscode": "^1.83.0",
     "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
@@ -127,12 +127,12 @@
   },
   "dependencies": {
     "axios": "^1.4.0",
-    "binance": "^2.8.8",
-    "bybit-api": "^3.7.1",
+    "binance": "^2.1.0",
+    "bybit-api": "^3.0.1",
     "crypto-js": "^4.1.1",
     "fs-extra": "^11.1.1",
-    "is-wsl":"^3.0.0",
-    "is-docker":"^3.0.0",
-    "define-lazy-prop": "^3.0.0"
+    "is-wsl":"^2.2.0",
+    "is-docker":"^2.1.1",
+    "define-lazy-prop": "^2.0.0"
   }
 }
