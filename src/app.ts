@@ -52,6 +52,7 @@ export class App {
       .then((rep) => {
         const result = rep.data
         if (result.status === 'ok' && result.data.length) {
+          console.log('res', result)
           this.updateStatusBar(result.data)
           this.updateActivityBar(result.data)
           // this.formatCoinData(result.data)
@@ -60,7 +61,7 @@ export class App {
       .catch((error) => {
         // api 错误
         // vscode.window.showErrorMessage("Api 请求出错了！", this.API_ADDRESS)
-        // console.error(error, 'APIERROR')
+        console.error(error, 'APIERROR')
       })
   }
   /**
