@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import axios from 'axios'
 import { util } from './utils'
-import { GET_EXCHANGE_INFO, UI_LINK, API_ADDRESS } from './config'
+import { UI_LINK, API_ADDRESS } from './config'
 import { TreeProvider } from './treeProvider'
 import eventBus, { EventBusConstants } from './utils/eventBus'
 import { WebViewMessage } from './config/constants'
@@ -52,15 +52,13 @@ export class App {
       .then((rep) => {
         const result = rep.data
         if (result.status === 'ok' && result.data.length) {
-          console.log('res', result)
           this.updateStatusBar(result.data)
           this.updateActivityBar(result.data)
-          // this.formatCoinData(result.data)
         }
       })
       .catch((error) => {
         // api 错误
-        // vscode.window.showErrorMessage("Api 请求出错了！", this.API_ADDRESS)
+        vscode.window.showErrorMessage('Api 请求出错了！', this.API_ADDRESS)
         console.error(error, 'APIERROR')
       })
   }

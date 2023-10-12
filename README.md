@@ -21,6 +21,16 @@
     "BTCUSDT",
     "ETHUSDT"
   ],
+   /*
+   * 说明：配置需要监控的数字货币涨跌幅
+   * 规则：BTC(比特币) + USDT(交易对) = BTCUSDT
+   * 规则：BTCUSDT(币对) + 5(间隔分钟) + 1(涨跌幅) + 300(提醒间隔秒数)
+   */
+  "blockchain-tools.marketCoin": [
+     "BTCUSDT_5_1_300",
+     "ETHUSDT_5_1_300",
+     "ETHBTC_5_0.5_300"
+  ],
   /*
    * 说明：配置 Bybit 交易对
    * 规则：BTC(比特币) + USDT(交易对) = BTCUSDT

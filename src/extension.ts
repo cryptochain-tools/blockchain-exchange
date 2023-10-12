@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import { App } from './app'
 import { regCommand } from './regCommand'
+import { MarketMonitoring } from './marketMonitoring'
 
 // 当您的扩展程序被激活时调用此方法
 // 您的扩展在第一次执行命令时被激活
@@ -21,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
   // context.subscriptions.push(disposable);
   regCommand(context)
   new App(context)
+  new MarketMonitoring(context)
 }
 
 // this method is called when your extension is deactivated

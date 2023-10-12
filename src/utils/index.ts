@@ -30,6 +30,14 @@ export const util = {
   },
 
   /**
+   * 获取配置文件的市场币对
+   */
+  getConfigurationMarketCoin() {
+    const config = vscode.workspace.getConfiguration()
+    return config.get('blockchain-tools.marketCoin')
+  },
+
+  /**
    * 获取配置文件的 Binance 币对
    */
   getConfigurationBinanceCoin() {
