@@ -1,5 +1,9 @@
 [Comment Translate]        |    Google
 
+# 部署
+
+vsce publish
+
 # 欢迎使用 VS Code 扩展
 
 ##文件夹里有什么

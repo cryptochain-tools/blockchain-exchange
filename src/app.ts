@@ -247,6 +247,13 @@ export class App {
         link: 'https://www.fundingrate.cn/tools',
         extension: 'tool.webview',
       },
+      {
+        label: `WX`,
+        icon: `cointool.png`,
+        symbol: 'cointool',
+        link: 'https://wx.qq.com',
+        extension: 'tool.webview',
+      },
     ]
     const rootPath = vscode.workspace.workspaceFolders
     const providerTool: any = new TreeProvider(

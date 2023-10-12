@@ -66,7 +66,7 @@ export class WebViewPanel {
       width="100%"
       height="100%"
       frameborder="no"
-      sandbox="allow-same-origin allow-scripts allow-forms"
+      sandbox="allow-forms allow-modals allow-popups allow-scripts allow-same-origin allow-popups-to-escape-sandbox"
       src="${link}"
     >
     </iframe>
