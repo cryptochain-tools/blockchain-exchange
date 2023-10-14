@@ -2,7 +2,7 @@
   "name": "blockchain-tools",
   "displayName": "Blockchain Tools",
   "description": "vscode 配置状态栏查看 比特币价格、查看资金费率、常用工具、各交易所下单等",
-  "version": "1.1.26",
+  "version": "1.1.27",
   "publisher": "wq599263163",
   "repository": {
     "type": "git",
@@ -143,9 +143,10 @@
     "binance": "^2.1.0",
     "bybit-api": "^3.7.3",
     "crypto-js": "^4.1.1",
+    "dayjs": "^1.11.10",
+    "define-lazy-prop": "^2.0.0",
     "fs-extra": "^11.1.1",
-    "is-wsl":"^2.2.0",
-    "is-docker":"^2.1.1",
-    "define-lazy-prop": "^2.0.0"
+    "is-docker": "^2.1.1",
+    "is-wsl": "^2.2.0"
   }
 }

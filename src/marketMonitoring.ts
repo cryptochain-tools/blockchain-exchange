@@ -4,6 +4,7 @@ import { util } from './utils'
 import axios from 'axios'
 import { TreeProvider } from './treeProvider'
 import { UI_LINK } from './config'
+import dayjs from 'dayjs'
 
 export class MarketMonitoring {
   private activateContext: vscode.ExtensionContext
@@ -111,12 +112,13 @@ export class MarketMonitoring {
           change: _change,
         })
         if (Math.abs(_change) > Number(change)) {
+          const t = dayjs().format('HH:mm:ss')
           if (
             Number(this.map.get(coin) || 0) + Number(interval) * 1000 <
             Date.now()
           ) {
             this.map.set(coin, Date.now())
-            const text = `${coin.replace(
+            const text = `${t} ${coin.replace(
               'USDT',
               ''
             )} ${time} 分钟，从 ${start.toFixed(3)} ${
