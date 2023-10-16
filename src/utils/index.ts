@@ -123,4 +123,13 @@ export const util = {
       return 0
     }
   },
+
+  toFixed(v: string | number | null = 0, d = 2, max = 4) {
+    const newV = Number(v)
+    if (newV < 1) {
+      return newV.toFixed(max)
+    } else {
+      return newV.toFixed(d)
+    }
+  },
 }

@@ -39,7 +39,7 @@ export class MarketMonitoring {
       return {
         label: `「${i.coin.replace('USDT', '')}」${i.time} 分钟 ${
           i.change > 0 ? '📈' : '📉'
-        } ${i.change.toFixed(2)}%`,
+        } ${util.toFixed(i.change)}%`,
         icon: `star1.png`,
         symbol: '',
         link,
@@ -121,11 +121,11 @@ export class MarketMonitoring {
             const text = `${t} ${coin.replace(
               'USDT',
               ''
-            )} ${time} 分钟，从 ${start.toFixed(3)} ${
+            )} ${time} 分钟，从 ${util.toFixed(start)} ${
               _change > 0 ? '上涨' : '下跌'
-            }到 ${end.toFixed(3)}，${
+            }到 ${util.toFixed(end)}，${
               _change > 0 ? '涨' : '跌'
-            }幅 ${_change.toFixed(2)}%`
+            }幅 ${util.toFixed(_change)}%`
             vscode.window.showWarningMessage(text)
           } else {
             console.log(
