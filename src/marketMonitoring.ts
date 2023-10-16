@@ -37,9 +37,11 @@ export class MarketMonitoring {
       const [coin, trading] = util.getCoinInfo(i.coin.toUpperCase())
       const link = `${UI_LINK}${coin}/${trading}`
       return {
-        label: `「${i.coin.replace('USDT', '')}」${i.time} 分钟 ${
-          i.change > 0 ? '📈' : '📉'
-        } ${util.toFixed(i.change)}%`,
+        label: `「${i.coin.replace('USDT', '')}」${util.toFixed(i.end)} ${
+          i.time
+        } 分钟 ${i.change > 0 ? '📈' : '📉'} ${util.formatPercentage(
+          i.change
+        )}%`,
         icon: `star1.png`,
         symbol: '',
         link,
@@ -65,17 +67,19 @@ export class MarketMonitoring {
     /* 每次init重新更新配置文件的内容 */
     this.marketCoin = util.getConfigurationMarketCoin() as Array<string>
     this.updateInterval = util.getConfigurationTime()
-    const list = this.marketCoin.map((item) => {
-      const [coin, time, change, interval] = item.split('_')
-      return `${coin.replace(
-        'USDT',
-        ''
-      )} 每 ${time} 分钟，变化超过 ${change}% 间隔 ${interval} 秒`
-    })
-    vscode.window.showInformationMessage(
-      `配置初始化，如需调整请修改[blockchain-tools.marketCoin]`,
-      ...list
-    )
+    // const list = this.marketCoin.map((item) => {
+    //   const [coin, time, change, interval] = item.split('_')
+    //   return `${coin.replace(
+    //     'USDT',
+    //     ''
+    //   )} 每 ${time} 分钟，变化超过 ${util.formatPercentage(
+    //     change
+    //   )}% 间隔 ${interval} 秒`
+    // })
+    // vscode.window.showInformationMessage(
+    //   `配置初始化，如需调整请修改[blockchain-tools.marketCoin]`,
+    //   ...list
+    // )
     this.getIndexPriceKline()
     this.timer = setInterval(() => {
       this.getIndexPriceKline()
@@ -125,7 +129,7 @@ export class MarketMonitoring {
               _change > 0 ? '上涨' : '下跌'
             }到 ${util.toFixed(end)}，${
               _change > 0 ? '涨' : '跌'
-            }幅 ${util.toFixed(_change)}%`
+            }幅 ${util.formatPercentage(_change)}%`
             vscode.window.showWarningMessage(text)
           } else {
             console.log(

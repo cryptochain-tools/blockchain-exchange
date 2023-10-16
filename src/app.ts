@@ -80,16 +80,15 @@ export class App {
       const isFocus = this.coins.indexOf(symbol.toUpperCase()) === -1 ? 0 : 1
 
       const newItem = {
-        label: `「${trading === 'USDT' ? coin : coin + '/' + trading}」${
-          item.close
-        } ${item.close > item.open ? '📈' : '📉'} ${util.formatNumber(
-          (item.close - item.open) / item.open,
-          100
-        )}%`,
+        label: `「${
+          trading === 'USDT' ? coin : coin + '/' + trading
+        }」${util.toFixed(item.close)} ${
+          item.close > item.open ? '📈' : '📉'
+        } ${util.formatPercentage((item.close - item.open) / item.open, 100)}%`,
         icon: `star${isFocus}.png`,
         isFocus,
-        price: item.close,
-        type: `${item.close > item.open ? '📈' : '📉'} ${util.formatNumber(
+        price: util.toFixed(item.close),
+        type: `${item.close > item.open ? '📈' : '📉'} ${util.formatPercentage(
           (item.close - item.open) / item.open,
           100
         )}%`,
@@ -137,7 +136,7 @@ export class App {
       if (this.coins.includes(symbol.toUpperCase())) {
         const statusBarItemsText = `「${
           trading === 'USDT' ? coin : coin + '/' + trading
-        }」${util.formatNumber(item.close, 1, 3)} ${util.formatNumber(
+        }」${util.formatPercentage(item.close, 1, 3)} ${util.formatPercentage(
           (item.close - item.open) / item.open,
           100
         )}%`

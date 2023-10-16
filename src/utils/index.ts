@@ -115,7 +115,7 @@ export const util = {
     return lan.locale
   },
 
-  formatNumber(num: any, x = 1, fixed = 2) {
+  formatPercentage(num: any, x = 1, fixed = 2) {
     if (num) {
       const _num = Number(Number(Number(num) * x)).toFixed(fixed)
       return Number(_num)
@@ -124,7 +124,7 @@ export const util = {
     }
   },
 
-  toFixed(v: string | number | null = 0, d = 2, max = 4) {
+  toFixed(v: string | number | null = 0, d = 0, max = 4) {
     const newV = Number(v)
     if (newV < 1) {
       return newV.toFixed(max)
