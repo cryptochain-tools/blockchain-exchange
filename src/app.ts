@@ -136,7 +136,7 @@ export class App {
       if (this.coins.includes(symbol.toUpperCase())) {
         const statusBarItemsText = `「${
           trading === 'USDT' ? coin : coin + '/' + trading
-        }」${util.formatPercentage(item.close, 1, 3)} ${util.formatPercentage(
+        }」${util.toFixed(item.close)} ${util.formatPercentage(
           (item.close - item.open) / item.open,
           100
         )}%`
