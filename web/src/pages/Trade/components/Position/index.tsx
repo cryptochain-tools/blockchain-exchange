@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Button, Divider, Popconfirm, message, Tabs } from 'antd'
-import { eventBus, WebViewMessage } from '../../../../utils'
+import { eventBus, WebViewMessage, formatPercentage } from '../../../../utils'
 
 const Position = () => {
   const [page, setPage] = useState({
-    bybitUnifiedMargin: [],
-    bybitSpot: [],
+    bybitUnifiedTrading: [],
   })
   useEffect(() => {
-    eventBus.on(WebViewMessage.positions, ({ type, data }: any) => {
+    eventBus.on(WebViewMessage.positions, ({ type, data = [] }: any) => {
+      const d = data.map((i: any) => {
+        return {
+          ...i,
+          avgPrice: formatPercentage(i.avgPrice),
+          markPrice: formatPercentage(i.markPrice),
+          positionIM: formatPercentage(i.positionIM),
+          unrealisedPnl: formatPercentage(i.unrealisedPnl),
+          cumRealisedPnl: formatPercentage(i.cumRealisedPnl),
+        }
+      })
       setPage({
         ...page,
-        [type]: data,
+        [type]: d,
       })
     })
     return () => eventBus.off(WebViewMessage.positions)
@@ -35,8 +44,8 @@ const Position = () => {
     },
     {
       title: '入场价格',
-      dataIndex: 'entryPrice',
-      key: 'entryPrice',
+      dataIndex: 'avgPrice',
+      key: 'avgPrice',
     },
     {
       title: '标记价格',
@@ -49,9 +58,14 @@ const Position = () => {
       key: 'positionIM',
     },
     {
-      title: '未结盈亏 (%)',
+      title: '未结盈亏 (USD)',
       dataIndex: 'unrealisedPnl',
       key: 'unrealisedPnl',
+    },
+    {
+      title: '已结盈亏 (USD)',
+      dataIndex: 'cumRealisedPnl',
+      key: 'cumRealisedPnl',
     },
     {
       title: '平仓',
@@ -72,7 +86,11 @@ const Position = () => {
             <Button type="link" disabled>
               限价
             </Button>
-            <Popconfirm title={`确定平仓 ${r.symbol} ?`} onConfirm={confirm}>
+            <Popconfirm
+              disabled
+              title={`确定平仓 ${r.symbol} ?`}
+              onConfirm={confirm}
+            >
               <Button type="link" danger>
                 市价
               </Button>
@@ -93,12 +111,12 @@ const Position = () => {
         tabPosition="top"
         items={[
           {
-            label: 'Bybit-统一保证金',
-            key: 'Bybit-统一保证金',
+            label: 'Bybit-统一交易账户',
+            key: 'Bybit-统一交易账户',
             children: (
               <Table
                 size="small"
-                dataSource={page.bybitUnifiedMargin}
+                dataSource={page.bybitUnifiedTrading}
                 columns={columns}
                 pagination={false}
                 showHeader={true}

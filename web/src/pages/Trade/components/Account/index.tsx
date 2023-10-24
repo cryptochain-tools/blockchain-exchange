@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Button, Divider, message, Popconfirm, Tabs, Modal } from 'antd'
-import { eventBus, WebViewMessage } from '../../../../utils'
+import { eventBus, WebViewMessage, formatPercentage } from '../../../../utils'
 import Transfer from '../Transfer'
 const ItemsName = {
   key: 'ACTIVE_KEY_ACCOUNT',
-  bybitUnifiedMargin: 'Bybit-统一保证金',
-  bybitSpot: 'Bybit-现货',
+  bybitUnifiedTrading: 'Bybit-统一交易账户',
+  bybitFunding: 'Bybit-资金账户',
   binanceSpot: 'Binance-现货',
 }
 
 const Account = () => {
   const [activeKey, setActiveKey] = useState(() => {
-    return localStorage.getItem(ItemsName.key) || ItemsName.bybitUnifiedMargin
+    return localStorage.getItem(ItemsName.key) || ItemsName.bybitUnifiedTrading
   })
   const onChange = (key: string) => {
     localStorage.setItem(ItemsName.key, key)
@@ -19,16 +19,25 @@ const Account = () => {
   }
   const [isTransfer, setIsTransfer] = useState(false)
   const [page, setPage] = useState({
-    bybitUnifiedMargin: [],
-    bybitSpot: [],
+    bybitUnifiedTrading: [],
+    bybitFunding: [],
     binanceSpot: [],
   })
+  const [data, setData] = useState<any>({})
   useEffect(() => {
     eventBus.on(WebViewMessage.account, ({ type, data }: any) => {
-      setPage({
-        ...page,
-        [type]: data,
-      })
+      if (type === 'bybitUnifiedTrading') {
+        setPage({
+          ...page,
+          [type]: data.result,
+        })
+        setData(data)
+      } else {
+        setPage({
+          ...page,
+          [type]: data,
+        })
+      }
     })
     return () => eventBus.off(WebViewMessage.account)
   }, [page])
@@ -39,27 +48,27 @@ const Account = () => {
       key: 'coin',
     },
     {
-      title: '可用余额',
-      dataIndex: 'free',
-      key: 'free',
+      title: '钱包余额',
+      dataIndex: 'walletBalance',
+      key: 'walletBalance',
     },
     {
-      title: '冻结余额',
-      dataIndex: 'locked',
-      key: 'locked',
+      title: '可划余额',
+      dataIndex: 'transferBalance',
+      key: 'transferBalance',
     },
     {
       title: '总金额',
-      dataIndex: 'total',
-      key: 'total',
+      dataIndex: 'walletBalance',
+      key: 'walletBalance',
     },
   ]
 
   const columns = [
     {
       title: '币种',
-      dataIndex: 'currencyCoin',
-      key: 'currencyCoin',
+      dataIndex: 'coin',
+      key: 'coin',
     },
     {
       title: '数量',
@@ -72,9 +81,9 @@ const Account = () => {
       key: 'usdValue',
     },
     {
-      title: '可用余额',
-      dataIndex: 'availableBalanceWithoutConvert',
-      key: 'availableBalanceWithoutConvert',
+      title: '可划转提现金额',
+      dataIndex: 'availableToWithdraw',
+      key: 'availableToWithdraw',
     },
     {
       title: '设置',
@@ -82,7 +91,7 @@ const Account = () => {
       render: (_: string, r: any) => {
         return (
           <div>
-            <Button type="link" onClick={() => setIsTransfer(true)}>
+            <Button disabled type="link" onClick={() => setIsTransfer(true)}>
               划转
             </Button>
           </div>
@@ -90,7 +99,7 @@ const Account = () => {
       },
     },
   ]
-  const bybitSpotColumns = [
+  const bybitFundingColumns = [
     ...base,
     {
       title: '设置',
@@ -98,7 +107,7 @@ const Account = () => {
       render: (_: string, r: any) => {
         return (
           <div>
-            <Button type="link" onClick={() => setIsTransfer(true)}>
+            <Button disabled type="link" onClick={() => setIsTransfer(true)}>
               划转
             </Button>
           </div>
@@ -115,7 +124,7 @@ const Account = () => {
       render: (_: string, r: any) => {
         return (
           <div>
-            <Button type="link" disabled>
+            <Button disabled type="link">
               划转
             </Button>
           </div>
@@ -125,24 +134,46 @@ const Account = () => {
   ]
 
   return (
-    <div
-      style={{
-        paddingBottom: '50px',
-      }}
-    >
-      <div>
+    <>
+      <div
+        style={{
+          paddingBottom: '50px',
+        }}
+      >
+        {activeKey === ItemsName.bybitUnifiedTrading ? (
+          <>
+            <div className="flex" style={{ marginBottom: 20 }}>
+              <div style={{ marginRight: 20 }}>
+                IM: {formatPercentage(data.accountIMRate, 100, 2)} %
+              </div>
+              <div style={{ marginRight: 20 }}>
+                MM: {formatPercentage(data.accountMMRate, 100, 2)} %
+              </div>
+              <div style={{ marginRight: 20 }}>
+                总资产: {formatPercentage(data.totalEquity)}
+              </div>
+              <div style={{ marginRight: 20 }}>
+                保证金余额: {formatPercentage(data.totalMarginBalance)}
+              </div>
+              <div style={{ marginRight: 20 }}>
+                未结盈亏：{formatPercentage(data.totalPerpUPL)}
+              </div>
+            </div>
+          </>
+        ) : null}
+
         <Tabs
           tabPosition="top"
           activeKey={activeKey}
           onChange={onChange}
           items={[
             {
-              label: ItemsName.bybitUnifiedMargin,
-              key: ItemsName.bybitUnifiedMargin,
+              label: ItemsName.bybitUnifiedTrading,
+              key: ItemsName.bybitUnifiedTrading,
               children: (
                 <Table
                   size="small"
-                  dataSource={page.bybitUnifiedMargin}
+                  dataSource={page.bybitUnifiedTrading}
                   columns={columns}
                   pagination={false}
                   showHeader={true}
@@ -150,40 +181,40 @@ const Account = () => {
               ),
             },
             {
-              label: ItemsName.bybitSpot,
-              key: ItemsName.bybitSpot,
+              label: ItemsName.bybitFunding,
+              key: ItemsName.bybitFunding,
               children: (
                 <Table
                   size="small"
-                  dataSource={page.bybitSpot}
-                  columns={bybitSpotColumns}
+                  dataSource={page.bybitFunding}
+                  columns={bybitFundingColumns}
                   pagination={false}
                   showHeader={true}
                 />
               ),
             },
-            {
-              label: ItemsName.binanceSpot,
-              key: ItemsName.binanceSpot,
-              children: (
-                <Table
-                  size="small"
-                  dataSource={page.binanceSpot}
-                  columns={binanceSpotColumns}
-                  pagination={false}
-                  showHeader={true}
-                />
-              ),
-            },
+            // {
+            //   label: ItemsName.binanceSpot,
+            //   key: ItemsName.binanceSpot,
+            //   children: (
+            //     <Table
+            //       size="small"
+            //       dataSource={page.binanceSpot}
+            //       columns={binanceSpotColumns}
+            //       pagination={false}
+            //       showHeader={true}
+            //     />
+            //   ),
+            // },
           ]}
         />
+        <Transfer
+          isTransfer={isTransfer}
+          coin={page.bybitUnifiedTrading}
+          setIsTransfer={setIsTransfer}
+        />
       </div>
-      <Transfer
-        isTransfer={isTransfer}
-        coin={page.bybitUnifiedMargin}
-        setIsTransfer={setIsTransfer}
-      />
-    </div>
+    </>
   )
 }
 

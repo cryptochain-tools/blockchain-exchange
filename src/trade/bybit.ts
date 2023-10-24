@@ -10,6 +10,7 @@ import {
   CopyTradingClient,
   RestClientOptions,
   WebsocketClient,
+  RestClientV5,
 } from 'bybit-api'
 import { WebViewMessage } from '../config/constants'
 import eventBus, { EventBusConstants } from '../utils/eventBus'
@@ -27,6 +28,7 @@ import { sleep } from '../utils/sleep'
 export class Bybit {
   private static current: Bybit | undefined
   private client: UnifiedMarginClient
+  private clientV5: RestClientV5
   private spotClient: SpotClientV3
   private accountClient: AccountAssetClient
   private unifiedWS: WebsocketClient
@@ -64,13 +66,11 @@ export class Bybit {
     }
 
     if (clientConfig.key && clientConfig.secret) {
+      console.log('data322323', clientConfig)
       this.client = new UnifiedMarginClient(clientConfig)
       this.spotClient = new SpotClientV3(clientConfig)
       this.accountClient = new AccountAssetClient(clientConfig)
-      // this.unifiedWS = new WebsocketClient({
-      //   ...clientConfig,
-      //   market: 'unifiedPerp'
-      // })
+      this.clientV5 = new RestClientV5(clientConfig)
     }
   }
 
@@ -80,9 +80,9 @@ export class Bybit {
       await sleep(0.2)
       this.getActiveOrders()
       await sleep(0.2)
-      this.getBalances()
+      this.getUnifiedTradingBalances()
       await sleep(0.2)
-      this.getSpotBalances()
+      this.getFundingBalances()
       await sleep(0.2)
       this.getSpotActiveOrders()
     } else {
@@ -101,10 +101,8 @@ export class Bybit {
 
   static clear() {
     if (Bybit.current.time) {
-      // vscode.window.showInformationMessage('清理 Bybit 成功！')
       clearInterval(Bybit.current.time as unknown as number)
       Bybit.current.time = null
-      // Bybit.current = null
     }
   }
 
@@ -144,7 +142,7 @@ export class Bybit {
       }
     })
 
-    eventBus.on(WebViewMessage.bybitSpotCancelorder, async (data: any) => {
+    eventBus.on(WebViewMessage.bybitFundingCancelorder, async (data: any) => {
       const res = await this.spotClient.cancelOrder(data)
       if (res.retCode === 0) {
         vscode.window.showInformationMessage('取消成功！')
@@ -153,7 +151,7 @@ export class Bybit {
       }
     })
 
-    eventBus.on(WebViewMessage.bybitSpotPlaceorder, async (data: any) => {
+    eventBus.on(WebViewMessage.bybitFundingPlaceorder, async (data: any) => {
       const res = await this.spotClient.submitOrder(data)
       if (res.retCode === 0) {
         vscode.window.showInformationMessage('提交成功！')
@@ -207,50 +205,57 @@ export class Bybit {
     })
   }
 
-  private async getBalances() {
-    const data = await this.client.getBalances()
+  private async getUnifiedTradingBalances() {
+    const data = await this.clientV5.getWalletBalance({
+      accountType: 'UNIFIED',
+    })
 
     if (data.retCode === 0) {
-      const result = data.result.coin.map((item) => {
+      const res = data.result.list[0]
+      const result = res.coin.map((item) => {
         return {
           ...item,
           equity: Number(item.equity).toFixed(2),
           usdValue: Number(item.usdValue).toFixed(2),
-          availableBalanceWithoutConvert: Number(
-            item.availableBalanceWithoutConvert
-          ).toFixed(2),
+          availableToWithdraw: Number(item.availableToWithdraw).toFixed(2),
         }
       })
-      this.emitVebView(
-        WebViewMessage.account,
-        DataType.bybitUnifiedMargin,
-        result
-      )
+      const d = {
+        result,
+        ...res,
+      }
+      this.emitVebView(WebViewMessage.account, DataType.bybitUnifiedTrading, d)
     }
   }
 
-  private async getSpotBalances() {
-    const data = await this.spotClient.getBalances()
+  private async getFundingBalances() {
+    const data = await this.clientV5.getAllCoinsBalance({
+      accountType: 'FUND',
+    })
 
     if (data.retCode === 0) {
-      const result = data.result.balances.map((item) => {
+      const res = data.result.balance
+      const result = res.map((item) => {
         return {
           ...item,
-          locked: Number(item.locked).toFixed(2),
-          free: Number(item.free).toFixed(2),
-          total: Number(item.total).toFixed(2),
+          walletBalance: Number(item.walletBalance).toFixed(2),
+          transferBalance: Number(item.transferBalance).toFixed(2),
         }
       })
-      this.emitVebView(WebViewMessage.account, DataType.bybitSpot, result)
+      const r = result.filter((i: any) => Number(i.walletBalance) > 0.1)
+      this.emitVebView(WebViewMessage.account, DataType.bybitFunding, r)
     }
   }
 
   async getPositions() {
-    const data = await this.client.getPositions({ category: 'linear' })
+    const data = await this.clientV5.getPositionInfo({
+      category: 'linear',
+      settleCoin: 'USDT',
+    })
     if (data.retCode === 0) {
       this.emitVebView(
         WebViewMessage.positions,
-        DataType.bybitUnifiedMargin,
+        DataType.bybitUnifiedTrading,
         data.result.list
       )
     }
@@ -266,7 +271,7 @@ export class Bybit {
       }
     })
     if (data.retCode === 0) {
-      this.emitVebView(WebViewMessage.openOrder, DataType.bybitSpot, list)
+      // this.emitVebView(WebViewMessage.openOrder, DataType.bybitFunding, list)
     }
   }
 
@@ -286,7 +291,7 @@ export class Bybit {
 
       this.emitVebView(
         WebViewMessage.openOrder,
-        DataType.bybitUnifiedMargin,
+        DataType.bybitUnifiedTrading,
         list
       )
     }

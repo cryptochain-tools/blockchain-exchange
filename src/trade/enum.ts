@@ -1,5 +1,5 @@
 export const DataType = {
-  bybitUnifiedMargin: 'bybitUnifiedMargin',
-  bybitSpot: 'bybitSpot',
+  bybitUnifiedTrading: 'bybitUnifiedTrading',
+  bybitFunding: 'bybitFunding',
   binanceSpot: 'binanceSpot',
 }

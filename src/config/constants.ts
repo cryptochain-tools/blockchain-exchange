@@ -16,12 +16,12 @@ export const WebViewMessage = {
 
   // 取消挂单
   bybitDvCancelorder: 'bybitDvCancelorder',
-  bybitSpotCancelorder: 'bybitSpotCancelorder',
+  bybitFundingCancelorder: 'bybitFundingCancelorder',
   binanceSpotCancelorder: 'binanceSpotCancelorder',
 
   // 创建委托订单
   bybitDvPlaceorder: 'bybitDvPlaceorder',
-  bybitSpotPlaceorder: 'bybitSpotPlaceorder',
+  bybitFundingPlaceorder: 'bybitFundingPlaceorder',
   binanceSpotPlaceorder: 'binanceSpotPlaceorder',
   //   划转
   bybitTransfer: 'bybitTransfer',

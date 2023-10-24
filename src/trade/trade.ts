@@ -95,6 +95,7 @@ export class Trade {
       Trade.clear()
     }
     const exchange = Trade.readActiveExchange(context)
+    console.log('开始', exchange)
     switch (exchange) {
       case Exchange.Bybit:
         Bybit.start()

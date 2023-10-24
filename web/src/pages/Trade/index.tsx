@@ -28,6 +28,13 @@ const Trade = () => {
     eventBus.emitVscode(WebViewMessage.showPassword, data.password)
     setOpen(false)
   }
+  useEffect(() => {
+    window.onkeyup = (e) => {
+      if (e.key === 'Enter' && open) {
+        handleOk()
+      }
+    }
+  }, [open])
 
   useEffect(() => {
     eventBus.on(WebViewMessage.readActiveType, (label: any) => {

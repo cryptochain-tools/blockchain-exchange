@@ -3,19 +3,17 @@ import { Table, Button, Divider, message, Popconfirm, Tabs } from 'antd'
 import { eventBus, WebViewMessage } from '../../../../utils'
 import { PlusOutlined } from '@ant-design/icons'
 import UnifiedMargin from './UnifiedMargin'
-import Spot from './Spot'
 import BinanceSpot from './BinanceSpot'
 
 const ItemsName = {
   key: 'ACTIVE_KEY_OPEN_ORDER',
-  bybitUnifiedMargin: 'Bybit-统一保证金',
-  bybitSpot: 'Bybit-现货',
+  bybitUnifiedTrading: 'Bybit-统一交易账户',
   binanceSpot: 'Binance-现货',
 }
 
 const OpenOrder = () => {
   const [activeKey, setActiveKey] = useState(() => {
-    return localStorage.getItem(ItemsName.key) || ItemsName.bybitUnifiedMargin
+    return localStorage.getItem(ItemsName.key) || ItemsName.bybitUnifiedTrading
   })
   const onChange = (key: any) => {
     localStorage.setItem(ItemsName.key, key)
@@ -25,8 +23,7 @@ const OpenOrder = () => {
   const [spot, setSpot] = useState(false)
   const [binanceSpot, setBinanceSpot] = useState(false)
   const [page, setPage] = useState({
-    bybitUnifiedMargin: [],
-    bybitSpot: [],
+    bybitUnifiedTrading: [],
     binanceSpot: [],
   })
   useEffect(() => {
@@ -116,30 +113,6 @@ const OpenOrder = () => {
       },
     },
   ]
-  const bybitSpotColumns = [
-    ...base,
-    {
-      title: '设置',
-      dataIndex: 'settings',
-      render: (_: string, r: any) => {
-        const confirm = () => {
-          eventBus.emitVscode(WebViewMessage.bybitSpotCancelorder, {
-            orderId: r.orderId,
-          })
-        }
-        return (
-          <div>
-            <Popconfirm
-              title={`确定取消 ${r.symbol} 挂单?`}
-              onConfirm={confirm}
-            >
-              <Button type="link">撤单</Button>
-            </Popconfirm>
-          </div>
-        )
-      },
-    },
-  ]
   const binanceSpotColumns = [
     ...base,
     {
@@ -166,7 +139,7 @@ const OpenOrder = () => {
     },
   ]
 
-  const bybitUnifiedMargin = () => {
+  const bybitUnifiedTrading = () => {
     return (
       <div>
         <div
@@ -178,6 +151,7 @@ const OpenOrder = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
+            disabled
             onClick={() => setMargin(true)}
           >
             统保挂单
@@ -185,7 +159,7 @@ const OpenOrder = () => {
         </div>
         <Table
           size="small"
-          dataSource={page.bybitUnifiedMargin}
+          dataSource={page.bybitUnifiedTrading}
           columns={columns}
           pagination={false}
           showHeader={true}
@@ -230,39 +204,22 @@ const OpenOrder = () => {
         onChange={onChange}
         items={[
           {
-            label: ItemsName.bybitUnifiedMargin,
-            key: ItemsName.bybitUnifiedMargin,
-            children: bybitUnifiedMargin(),
-          },
-          {
-            label: ItemsName.bybitSpot,
-            key: ItemsName.bybitSpot,
-            children: spotElement(page.bybitSpot, bybitSpotColumns, setSpot),
+            label: ItemsName.bybitUnifiedTrading,
+            key: ItemsName.bybitUnifiedTrading,
+            children: bybitUnifiedTrading(),
           },
           // {
-          //     label: 'Binance-合约',
-          //     key: 'Binance-合约',
-          //     children: <Table
-          //         size="small"
-          //         dataSource={[]}
-          //         columns={columns}
-          //         pagination={false}
-          //         showHeader={true}
-          //     />,
+          //   label: ItemsName.binanceSpot,
+          //   key: ItemsName.binanceSpot,
+          //   children: spotElement(
+          //     page.binanceSpot,
+          //     binanceSpotColumns,
+          //     setBinanceSpot
+          //   ),
           // },
-          {
-            label: ItemsName.binanceSpot,
-            key: ItemsName.binanceSpot,
-            children: spotElement(
-              page.binanceSpot,
-              binanceSpotColumns,
-              setBinanceSpot
-            ),
-          },
         ]}
       />
       <UnifiedMargin open={margin} setOpen={setMargin} />
-      <Spot open={spot} setOpen={setSpot} />
       <BinanceSpot open={binanceSpot} setOpen={setBinanceSpot} />
     </div>
   )
