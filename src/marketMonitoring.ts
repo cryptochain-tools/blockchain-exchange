@@ -125,9 +125,9 @@ export class MarketMonitoring {
             const text = `${t} ${coin.replace(
               'USDT',
               ''
-            )} ${time} 分钟，从 ${util.toFixed(start)} ${
+            )} ${time} 分钟，从 ${util.toFixed(end)} ${
               _change > 0 ? '上涨' : '下跌'
-            }到 ${util.toFixed(end)}，${
+            }到 ${util.toFixed(start)}，${
               _change > 0 ? '涨' : '跌'
             }幅 ${util.formatPercentage(_change)}%`
             vscode.window.showWarningMessage(text)
