@@ -6,7 +6,7 @@
   "publisher": "wq599263163",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cryptochain-tools/blockchain-exchange.git"
+    "url": "https://github.com/earntools-labs/blockchain-exchange.git"
   },
   "engines": {
     "vscode": "^1.79.1"

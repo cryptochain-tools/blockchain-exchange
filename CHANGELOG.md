@@ -1,7 +1,7 @@
 # 更改日志
 ## 1.1.0
 - 修复 webview 无法打开问题
-- 更改源代码库地址 https://github.com/cryptochain-tools/blockchain-exchange
+- 更改源代码库地址 https://github.com/earntools-labs/blockchain-exchange
 ## 1.0.7
 - 开放源代码 https://github.com/wq599263163/blockchain-exchange
 
@@ -14,4 +14,3 @@
 - 请勿不同交易所设置不同密码，下一个版本迭代修复
 
 检查 [保留更改日志](http://keepachangelog.com/) 以获取有关如何构建此文件的建议。
-
